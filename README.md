@@ -20,6 +20,7 @@
 - abc
 * efg
 
+## [扩展知识](/docs/knowledge/)
 
 ## 文档编辑方式  <!-- {docsify-ignore} -->
 1. 在docs下功能对应的文件夹内新增md文件
