@@ -1,5 +1,5 @@
 
-# 学无定法，进取不息
+# ⭐学无定法，进取不息
 * 学习某块完整知识点 
 * 方便复习复盘
 * 开发心得
@@ -12,21 +12,35 @@
 ------------------------------------
 
 
-# test1
-- abc
-* efg
+# ⭐开发心得
+## 心得汇总
+- **[心得汇总](/docs/insight/)**
 
-## test2
-- abc
-* efg
+## 江南百景图
+- **[江南百景图](/docs/insight/?id=江南百景图)**
 
-### test3
-- abc
 
-#### test4
-* abc
+------------------------------------
+# ⭐[扩展知识](/docs/knowledge/)
+## git & github
+- [git日常积累](/docs/knowledge/git)
+- [git rebase](/docs/knowledge/git)
 
-## [扩展知识](/docs/knowledge/)
+## sourcetree
+- **[sourcetree](/docs/knowledge/sourcetree)**
+
+## markdown
+- **[markdown](/docs/knowledge/markdown)**
+- [md数学公式符号](https://www.cnblogs.com/ywsun/p/14271547.html)
+
+## emoji🌕🌖🌗🌘🌑🌙⭐
+- **常用emoji图标**
+    - [emoji github](/docs/knowledge/emoji)
+    - [emojikeyboard](https://emojikeyboard.top/)
+    - [getemoji](https://getemoji.com/)
+
+
+  
 
 ## 文档编辑方式  <!-- {docsify-ignore} -->
 1. 在docs下功能对应的文件夹内新增md文件
