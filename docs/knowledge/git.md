@@ -1,3 +1,10 @@
+## 远程和本地图片
+三种方式通过docsify在github.io中测试都通过  
+![](https://raw.githubusercontent.com/sywoon/MyLua/master/lua.gif)
+![](../lua.png)
+![](../lua.gif)  
+这里是相对路径，若在根目录下，可直接使用doc/lua.png
+
 ## 本地新增分支 推送给远端：
 ```
 git br -av 查看本地分支

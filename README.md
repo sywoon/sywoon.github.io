@@ -1,8 +1,4 @@
 
-![](https://raw.githubusercontent.com/sywoon/MyLua/master/lua.gif)
-![](/docs/lua.png)
-![](/docs/lua.gif)
-
 # ⭐学无定法，进取不息
 * 学习某块完整知识点 
 * 方便复习复盘
@@ -11,8 +7,8 @@
 
 * [工具基于docify](https://www.jsdelivr.com/package/npm/docsify)
 * [工具文档](https://docsify.js.org/#/zh-cn/)
-  [主题](https://github.com/jhildenbiddle/docsify-themeable)
-* (2024.3.9月启用)
+* [主题](https://github.com/jhildenbiddle/docsify-themeable)
+* <small>(2024.3.9月启用)</small>
 ------------------------------------
 
 
