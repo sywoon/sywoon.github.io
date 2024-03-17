@@ -15,15 +15,17 @@
   <script>
     //https://docsify.js.org/#/zh-cn/quickstart
     window.$docsify = {
-	  name: '<p>知识海洋</p>',
-	  nameLink: 'https://sywoon.github.io',
-      //loadSidebar: true,  // 加载 _sidebar.md 默认的无法跳转 不适合复杂层级
+	  name: 'Home',
+	  nameLink: '/#/README.md',
+      //loadSidebar: true, //加载 _sidebar.md 默认的无法跳转,不适合复杂层级；关闭后 使用readme的标题作为边栏
 	  auto2top: true,  //当路线改变时,滚动到屏幕的顶部
 	  loadNavbar: true,//_navbar.md如果为真，则从_navbar.md文件加载navbar 
 	  mergeNavbar: true,//Navbar将在小屏幕上与侧边栏合并
 	  executeScript: true,//执行页面上的脚本。只解析第一个脚本标记（演示）。如果存在Vue，则默认开
-	  maxLevel: 6,//最大的内容表级别
-      //subMaxLevel: 3,  //生成目录的最大层级 在自定义边栏中添加目录（TOC)
+	  //关闭sidebar后 边栏显示的是当前md的标题 这里可控制标题深度
+	  maxLevel: 6,//最大的内容表级别  当前md中的标题在边栏的深度 
+	  //开启sidebar后 边栏除了配置的内容外 额外显示映射子md的标题 可控制其深度 0：不额外显示 全按side的内容
+      subMaxLevel: 3,  //子文档中显示子标题的最大级别 子md中的标题在边栏的深度-开启sidebar有效？ 3层深度的菜单
 	  externalLinkTarget: '_blank', //外链打开方式：_blank表示在新标签页中打开
       coverpage: true,  //封面 _coverpage.md
 	  topMargin: 30,//调整top
