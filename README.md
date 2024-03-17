@@ -1,4 +1,8 @@
 
+![](https://raw.githubusercontent.com/sywoon/MyLua/master/lua.gif)
+![](/docs/lua.png)
+![](/docs/lua.gif)
+
 # ⭐学无定法，进取不息
 * 学习某块完整知识点 
 * 方便复习复盘
