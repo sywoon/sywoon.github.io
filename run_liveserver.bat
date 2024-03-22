@@ -1,0 +1,1 @@
+lite-server --port=9191 --baseDir ./
