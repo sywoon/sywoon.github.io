@@ -415,7 +415,7 @@ src/layaAir
 
 #### 2.6 位图
 
-#### 2.6.1 显示与切换图片
+##### 2.6.1 显示与切换图片
 
 图片是游戏的基础 游戏中有两种方式：Sprite.loadImage Graphics.drawTexture
 
@@ -475,7 +475,7 @@ src/layaAir
         this.ape.graphics.drawTexture(texture, 0, 0);
     ```
 
-#### 2.6.2 遮罩
+##### 2.6.2 遮罩
 - 可以设置一个对象-`位图`或`矢量图`
 - 遮罩api 属于laya.display.Sprite
     - mask属性 = Sprite 注意：坐标系相对遮罩对象本身？
@@ -502,9 +502,277 @@ src/layaAir
         - 双击空白区域 退出选中状态 就可以看到遮罩后的效果
 
 
-#### 2.6.3 设置滤镜
+##### 2.6.3 设置滤镜
 引擎提供颜色 发光 阴影 模糊
-- 颜色滤镜
+- 颜色滤镜 laya.filters.ColorFilter
+    - 需要一个颜色矩阵4x5 怎么计算的？
+    - 前四列分别表示红色、绿色、蓝色和透明度，第五列表示颜色偏差值 可以让你调整图像的亮度或者对比度
+    ```
+        R  R  R  0  0
+        G  G  G  0  0
+        B  B  B  0  0
+        A  A  A  1  0
+        //颜色滤镜矩阵，红色
+        var colorMatrix:any = 
+          [
+          1, 0, 0, 0, 0, //R
+          0, 0, 0, 0, 0, //G
+          0, 0, 0, 0, 0, //B
+          0, 0, 0, 1, 0, //A
+        ];
+        //创建红色颜色滤镜
+        var redFilter:Laya.ColorFilter = new Laya.ColorFilter(colorMatrix);
+        
+        //由 20 个项目（排列成 4 x 5 矩阵）组成的数组，灰图
+        var grayscaleMat: Array<number> = 
+        [0.3086, 0.6094, 0.0820, 0, 0, 
+         0.3086, 0.6094, 0.0820, 0, 0, 
+         0.3086, 0.6094, 0.0820, 0, 0, 
+         0, 0, 0, 1, 0];
+        
+        spr.filters = [redFilter];
+    ```
+
+- 发光滤镜 laya.filters.GlowFilter 可当成阴影滤镜使用
+    - GlowFilter(color:string, blur=4, offX=6, offY=6)
+    ```
+        //发光滤镜
+        var glowFilter: GlowFilter = new GlowFilter("#ffff00", 10, 0, 0);
+        //阴影滤镜
+        var shadowFilter: GlowFilter = new GlowFilter("#000000", 8, 8, 8);
+    ```
+
+- 模糊滤镜 laya.filters.BlurFilter
+    - BlurFilter(strength=4)
+    ```
+        var blurFilter: BlurFilter = new BlurFilter();
+        blurFilter.strength = 5;
+    ```
+
+#### 2.7 矢量图
+通过laya.display.Graphic绘制各种矢量图形 像是对canvas2d的封装
+
+##### 2.7.1 直线和折线
+- 直线 drawLine(fromx, fromy, tox, toy, lineColor:String, lineWidth=1)
+```typescript
+    this.sp.graphics.drawLine(10, 58, 146, 58, "#ff0000", 3);
+```
+
+- 折线 drawLines(x, y, points:Array, lineColor, lineWidth=1)
+    - points:[] 点集合 [x1,y1,x2,y2,...]  相对起点x y
+```
+    this.sp.graphics.drawLines(20, 88, [0, 0, 39, -50, 78, 0, 120, -50], "#ff0000", 3);
+```
+
+##### 2.7.2 ide中绘制直线
+Basics/Graphics/Line 拖入到view中
+
+
+##### 2.7.3 绘制曲线
+- 贝塞尔曲线：起点 终点 中间控制点 
+
+- 一次贝塞尔 是一条直线 1个控制点 沿着头尾移动 ![](bezier1.gif)
+- 二次贝塞尔 曲线 2个控制点 第一个沿着第一段 第二个沿着第二段 ![](bezier2.gif)
+- 三次贝塞尔 曲线 曲度更大 3个控制点形成2条线 再降维到2个控制点 后续同上 不同的是控制线也会移动 ![](bezier3.gif)
+- 高阶贝塞尔 曲线控制力度更大 可随意不同方向弯曲 
+    - 核心思路不变：多点形成的多条轴 -> 每条轴都有一个动点随着时间百分比从一端到另一端 -> 若大于2条会降维度  
+        -> 直到变成二次曲线为止 
+    ![](bezier4.gif) ![](bezier5.gif)
+
+- laya中绘制曲线-采用2 3次贝塞尔曲线
+    - laya.display.Graphics.drawCurves()
+    - drawCurves(x, y, points:Array, lineColor, linewidth=1)
+        - points 3个控制点 包含起始和终点
+    ```javascript
+        this.sp.graphics.drawCurves(10, 58, [0, 0, 19, -100, 39, 0], "#ff0000", 3); 2次
+        this.sp.graphics.drawCurves(10, 58, [0, 0, 19, -100, 39, 0, 58, 100, 78, 0], "#ff0000", 3); 3次
+    ```
+
+- ide中绘制曲线
+    - Basics:Graphics:Curves
+
+
+
+##### 2.7.4 绘制三角形、多边形以及自定义图案
+- 封闭的区域 顺时针的点布局 是否支持凹多边形？-支持  
+    - 注意：本质还是三角形 只有顺时针方向会渲染 逆时针不可见 估计默认设置的单面渲染
+    - laya.display.Grahpics.drawpoly(x, y, points, fillColor, lineColor, lineWidth=1)
+    
+    ```javascript
+    //画三角形  3个相对点
+    this.sp.graphics.drawPoly(30, 28, [0, 100, 50, 0, 100, 100], "#ffff00");
+    
+    //画多边形 
+    this.sp.graphics.drawPoly(30, 28, [0, 100, 50, 0, 100, 100, 75, 150, 25, 150], "#ffff00");
+    
+    var path: Array<number> = [];
+    path.push(0, -130);//五角星A点坐标
+    path.push(33, -33);//五角星B点坐标
+    path.push(137, -30);//五角星C点坐标
+    path.push(55, 32);//五角星D点坐标
+    path.push(85, 130);//五角星E点坐标
+    path.push(0, 73);//五角星F点坐标
+    path.push(-85, 130);//五角星G点坐标
+    path.push(-55, 32);//五角星H点坐标
+    path.push(-137, -30);//五角星I点坐标
+    path.push(-33, -33);//五角星J点坐标
+    canvas.graphics.drawPoly(Laya.stage.width / 2, Laya.stage.height / 2, path, "#FF7F50");
+    ```
+    ![](poly1.png)
+
+
+- ide中画多边形
+    - Basics:Graphics:Poly
+
+
+##### 2.7.5 绘制圆形与扇形
+- laya.display.Grahpics.drawCircle(x, y, radius, fillColor, lineColor=null, lineWidth=1)
+```js
+this.sp.graphics.drawCircle(80,80,50,"#ff0000");
+```
+
+- drawPie(x, y, radius, startAngle, endAngle, fillColor, lineColor=null, lineWidth=1)
+```js
+this.sp.graphics.drawPie(80,80,50,90,180,"#ff0000");
+```
+![](pie1.png)
+
+
+- ide中绘制圆形/扇形
+    - Basics:Graphics:Circle / Pie
+
+
+##### 2.7.6 绘制矩形和圆角矩形
+- laya.display.Grahpics.drawRect(x, y, width, height, fillColor, lineColor, lineWidth)
+```
+this.sp.graphics.drawRect(20, 20, 100, 50, "#ffff00");
+```
+
+- drawPath(x, y, paths, brush:Object=null, pen:Object=null)
+    - paths:[["moveTo",x,y], ["lineTo",x,y,x,y,x,y], ["arcTo", x1,y1,x2,y2,r]] 路径集合
+    ```
+    var path:Array<any> =  [
+        ["moveTo", 0, 0], //画笔移到A点
+        ["lineTo", 100, 0],//画到B点
+        ["lineTo", 100, 50],//再画到C点
+        ["lineTo", 0, 50], //继续画到D点
+        ["closePath"] //闭合路径  若无图像不会闭合-针对有边框的情况
+    ];
+     //绘制矩形  比drawRect麻烦一些 主要为了学习参数控制
+    this.sp.graphics.drawPath(20, 20, path, {fillStyle: "#ff0000"});
+    ```
+
+    - 绘制圆角矩形
+    ```
+    ["moveTo", 50, 50],
+    ["lineTo", 150, 50],
+    ["arcTo", 200, 50, 200, 100, 50],  3个点+半径 决定一个弧度 必须要直角？
+    ```
+    ![](path1.png)
+    ```
+        var path:any[] =  [
+                ["moveTo", 0, 0], //画笔的起始点，  这里有bug 若画线框会多出一截 ["moveTo", 30, 0], //画笔的起始点，
+                ["lineTo",400,0],
+                ["arcTo", 500, 0, 500, 30, 30], //p1（500,0）为夹角B，（500,30）为端点p2
+                ["lineTo",500,200],
+                ["arcTo", 500, 300, 470, 300, 30],//p1（500,300）为夹角C，（470,300）为端点p2
+                ["lineTo",30,300],
+                ["arcTo", 0, 300, 0, 270, 30], //p1(0,300)为夹角D，（0,270）为端点p2
+                ["lineTo",0,100],
+                ["arcTo", 0, 0, 30, 0, 30],//p1(0,0)为夹角A，（30,0）为端点p2
+            ];
+        //绘制圆角矩形
+        this.sp.graphics.drawPath(100, 100, path, {fillStyle: "#00ffff"});
+        //包含线框
+        this.sp.graphics.drawPath(100, 100, path, {fillStyle: "#ff0000"},{"strokeStyle":"#ffffff","lineWidth":"10"});
+    ```
+    ![](path2.png)
+
+- ide画矩形
+    - Basics:Graphics:Rect
+
+
+
+##### 2.7.7 消除矢量图绘制锯齿
+pc上比较明显 手机由于像素密度大 效果会好一些
+- 开启锯齿消除设置
+```
+    Laya.Config.isAntialias=true;  需要在init之前 因为参数是传给canvas webgl的？
+    Laya.init()
+```
+
+
+#### 2.8 动画基础
+Animation类可使用多种动画资源 
+[api-AnimationBase](https://layaair2.ldc2.layabox.com/api2/Chinese/index.html?version=2.9.0beta&type=Core&category=display&class=laya.display.AnimationBase)
+[api-Animation](https://layaair2.ldc2.layabox.com/api2/Chinese/index.html?version=2.9.0beta&type=Core&category=display&class=laya.display.Animation)
+
+
+##### 2.8.1 图集动画
+用ide创建时间轴动画.ani 图集打包后为.atlas
+- 命名规则：动作名+帧序列号 walk0.png walk1.png
+- 加载动画资源
+    - Animation.loadAtlas(url, loaded:Handler, cacheName)
+    - cacheName缓存动画模板名 可在play(start, loop, name)中使用
+    ```
+        this.roleAni = new Laya.Animation();
+        //加载动画图集，加载成功后执行回调方法
+        this.roleAni.loadAtlas("res/atlas/role.atlas",Laya.Handler.create(this,this.onLoaded));
+        默认不会播放 显示第一张图？
+        this.roleAni.play(); 一直循环播放
+    ```
+- play(start, loop, name) 整个从某帧开始播放
+
+- 通过createFrames(url, name)创建动画模板：为了区分多个不同的动作在同一个集合中
+    - 适合动作较少 全部打成一个图集 提高性能
+    - url为单个 或 数组
+    ```js
+        Laya.Animation.createFrames(this.aniUrls("die",6),"dizziness");
+        //循环播放动画
+        this.roleAni.play(0,true,"dizziness");
+        
+        private aniUrls(aniName:string,length:number):any{
+            var urls:any = [];
+            for(var i:number = 0;i<length;i++){
+                //动画资源路径要和动画图集打包前的资源命名对应起来
+                urls.push("role/"+aniName+i+".png");
+            }
+            return urls;
+        }
+    }
+    ```
+
+- 使用loadImages直接播放动画
+    - loadImages(urls, cacheName): Animation
+    ```
+        this.roleAni.loadImages(this.aniUrls("move",6)).play();
+    ```
+    - loadImage方法也可以创建动画模板
+        - 被多次使用的时候，使用动画模板可以节省CPU的开销
+        - 偶尔或一次使用，那就不要使用动画模板，因为节省CPU开销是以牺牲一定的内存开销为代价
+        - 怎么释放缓存?
+    ```
+        roleAni.loadImages(aniUrls("move",6),"walk").play();
+    ```
+
+- ide
+    - Animation组件  怎么用？
+
+
+##### 2.8.2 缓动动画
+Tween+Ease 实现各种动画效果 
+[demo](https://layaair2.ldc2.layabox.com/demo2/?language=zh&category=2d&group=Tween&name=EaseFunctionsDemo)
+
+- api
+    - from(target, props, duration, ease=null, complete=null, delay=0, coverBefore=false, autoRecover=true)
+    - to 同上
+    - 属性：位置 alpha 轴心 大小
+
+
+
+
+
+
 
 
 

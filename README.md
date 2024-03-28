@@ -39,6 +39,22 @@
 - [laya2.13.4](/docs/laya/?id=laya2134)
 
 
+
+# ⭐Mac& Win
+
+## [Mac日常](/docs/mac/)
+
+
+
+
+# ⭐Win日常
+
+## [Win日常](/docs/win/)
+
+
+
+
+
 ------------------------------------
 # ⭐[扩展知识](/docs/knowledge/)
 ## 🔸git & github
@@ -60,7 +76,7 @@
     - [getemoji](https://getemoji.com/)
 
 
-  
+
 
 ## 文档编辑方式  <!-- {docsify-ignore} -->
 1. 在docs下功能对应的文件夹内新增md文件
@@ -105,7 +121,6 @@
     };
     liveServer.start(params);
 ```
-
 
 
 
