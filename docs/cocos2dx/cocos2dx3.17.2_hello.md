@@ -1,9 +1,15 @@
-# cocos2dx
+# 🔙[cocos2dx](/docs/cocos2dx/)
+[源码](https://github.com/cocos2d/cocos2d-x/tags)
+[cocos2dx论坛](https://forum.cocos.org/c/cocos2d-x)
+[参考](https://blog.csdn.net/qq_41506812/article/details/130363574)
+- tests工程没有xcode工程文件 怎么用？：tests/cpp-test/
+- 别用templates/cpp-template-default里面的工程   因为这是用于cocos命令方式创建新工程的模版 路径配置相对cocos文件夹并不同
 
 
 
-## 环境准备
-1. 下载
+
+## win环境准备
+### 1. 下载
 - cocos2d-x-cocos2d-x-3.17.2.zip
 - cocos2d-x-3rd-party-libs-bin-3.zip 解压到external目录下
 	- 用python download-deps.py 也可以 会慢很多
@@ -14,10 +20,10 @@
 - bindings-generator git@github.com:cocos2d/bindings-generator.git 解压到tools目录
 
 
-2. 安装python2.7 
+### 2. 安装python2.7 
 可使用Python Version Selector 来切换
 
-3. cd到cocos目录 运行python setup.py
+### 3. cd到cocos目录 运行python setup.py
 ```
 	Setting up cocos2d-x...
     ->Check environment variable COCOS_CONSOLE_ROOT
@@ -61,7 +67,6 @@
     Please restart the terminal or restart computer to make added system variables take effect
 ```
 
-4. 重启电脑 否则cocos命令不启用 或者 source命令刷新系统路径
 
 
 ## 创建工程
@@ -75,7 +80,7 @@ cocos new MyGame -p com.mygame.test -l cpp -d .
 ## vs编译win32版本
 
 ### 编译报错
-1.  error C3861: “unzGoToFirstFile64”: 找不到标识符
+#### 1.  error C3861: “unzGoToFirstFile64”: 找不到标识符
 ZipUtils.cpp
 - 解决1：失败 还是找不到
 新增宏：MINIZIP_FROM_SYSTEM
@@ -105,11 +110,11 @@ external/unzip/unzip.h本身是存在的
 	而cocos2d-x-3rd-party-libs-bin-3.zip是2017
 
 
-2. fatal error LNK1104: 无法打开文件“libcurl.lib”
+#### 2. fatal error LNK1104: 无法打开文件“libcurl.lib”
 存在的目录：cocos2d\external\curl\prebuilt\win32\libcurl.lib .dll
 解决：链接器：附加库目录
 
-3. librecast编译不过
+#### 3. librecast编译不过
 error MSB8020: 无法找到 Visual Studio 2010 的生成工具(平台工具集 =“v100”)。若要使用 v100 生成工具进行生成，请安装 Visual Studio 2010 生成工具。或者，可以升级到当前 Visual Studio 工具，方式是通过选择“项目”菜单或右键单击该解决方案，然后选择“重定解决方案目标”。
 解决：属性：常规：平台工具及集：选择vs2022(v143)和你用哪个版本的vs有关
 
@@ -120,11 +125,11 @@ error MSB8020: 无法找到 Visual Studio 2010 的生成工具(平台工具集 =
 
 
 ## xcode编译mac版本
-1. 无论什么错 第一步骤 先把最小部署minimum deplyments 改为12 早期的项目都很小 xcode已经不支持
+无论什么错 第一步骤 先把最小部署minimum deplyments 改为12 早期的项目都很小 xcode已经不支持
 
 
 ### 编译mac版本报错
-1. Redefinition of enumerator 'kAudioSessionProperty_OtherAudioIsPlaying'
+#### 1. Redefinition of enumerator 'kAudioSessionProperty_OtherAudioIsPlaying'
 ```
 	CDXMacOSXSupport.cpp
 	enum AudioSessionProperties { 	
@@ -177,7 +182,7 @@ For main project as well as for libcocos2dMac
 If required do clean project and run
 ```
 
-2. No matching function for call to 'iconv_close'
+#### 2. No matching function for call to 'iconv_close'
 ```
 	CCFontAtlas.cpp
 	iconv_close(_iconv);
@@ -185,7 +190,7 @@ If required do clean project and run
 ```
 解决：加上强转 (iconv_t)_iconv
 
-3. mac自己的库报错
+#### 3. mac自己的库报错
 ```
 	macOS14.4/Frameworks/GameController/GCDevice.h
 	@property (nonatomic, strong) dispatch_queue_t handlerQueue API_AVAILABLE(macos(10.9), ios(7.0), tvos(7.0));
@@ -202,7 +207,7 @@ If required do clean project and run
 	- 注意：一定要clean build folder再重编
 	
 	
-4. Comnand Libtool failed with a nonzro exit code
+#### 4. Comnand Libtool failed with a nonzro exit code
 
 
 ### 编译ios版本报错

@@ -5,8 +5,10 @@
 ## [laya2.5.0](/docs/laya/laya2.5.0/README.md)
 - 项目里用的最多的版本
 
-## [laya2.13.4](/docs/laya/laya2.13.4)
+## [laya2.13.4](/docs/laya/laya2.13.4/README.md)
 - 打算升级的目标版本
+
+## [laya native](/docs/laya/laya_native.md)
 
 
 ## 官方资料
