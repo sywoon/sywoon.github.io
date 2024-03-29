@@ -14,7 +14,7 @@
 
 # ⭐​​​开发心得
 ## 🔸心得汇总
-- **[心得汇总](/docs/insight/)**
+- **[心得汇总](/docs/insight/)**/Users/s/Documents/Github/sywoon.github.io/run_liteserver_w.sh
 
 ## 🔸江南百景图
 - **[江南百景图](/docs/insight/?id=江南百景图)**
@@ -37,6 +37,9 @@
 ## 🔸[laya引擎](/docs/laya/)
 - [laya2.5.0](/docs/laya/?id=laya250)
 - [laya2.13.4](/docs/laya/?id=laya2134)
+
+## 🔸[cocos2dx引擎](/docs/cocos2dx/)
+
 
 
 
