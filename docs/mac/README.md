@@ -1,8 +1,9 @@
 # mac
 
 ## mac软件
-- [osx](osx.cx) 终身vip会员
-- [macwk](https://macwk.cn/) 下载无需注册 有各种破解版软件
+- [osx](osx.cx) 终身vip会员 parallel这里下载 
+- [macwk](https://macwk.cn/) 下载无需注册 有各种破解版软件 synergy这里下载的
+- [maczz](https://maczz.net) 类似macwk beyondcompare从这里下载的
 - 软件先锋 需要钱购买
 	- [macv-mac版本软件](https://www.macv.com/) 
 	- [macxf-pc版软件](https://macxf.com/ )
@@ -65,6 +66,13 @@ cmd + shift + o
 2. 前进和后退
 ctrl+cmd+方向键
 
+3. 剪切文件
+cmd+c 先复制  
+右键目标文件夹空白处 按住option 会出现移动到这
+
+4. 查看系统信息 
+- 比如预置udid-用于xcode在mac中运行ios程序 类似模拟器
+- 点击左上苹果图标 ： 按住option 关于本机 会变成 系统信息
 
 
 
