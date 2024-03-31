@@ -1,13 +1,16 @@
 # mac
 
-## mac软件
+## mac软件下载
 - [osx](osx.cx) 终身vip会员 parallel这里下载 
+  - shenglingdao   90….
+  - 解压密码  osx.cx
 - [macwk](https://macwk.cn/) 下载无需注册 有各种破解版软件 synergy这里下载的
 - [maczz](https://maczz.net) 类似macwk beyondcompare从这里下载的
 - 软件先锋 需要钱购买
 	- [macv-mac版本软件](https://www.macv.com/) 
 	- [macxf-pc版软件](https://macxf.com/ )
 - [macwk](https://macwk.cn/app/377.html) 
+- [maczj](https://maczj.com)
 
 - synergy  鼠标键盘共享
 	- [win](https://soft.macxf.com/soft/2615.html)
@@ -19,6 +22,74 @@
 
 - mac远程控制windows电脑
 	- [Microsoft Remote Desktop for mac](https://install.appcenter.ms/orgs/rdmacios-k2vy/apps/microsoft-remote-desktop-for-mac/distribution_groups/all-users-of-microsoft-remote-desktop-for-mac)
+
+- [win10 iso](https://www.microsoft.com/zh-cn/software-download/windows10ISO)
+没看到arm版本的
+
+- [win10 arm](https://sysin.org/blog/windows-10-arm/)
+
+- [xcode 13.2](https://sysin.org/blog/apple-xcode-13/)
+
+
+
+
+
+----------------------------
+# mac中好用的软件 
+大部分来之osx.cx
+
+
+## 系统
+- CrossOver_24.0.1_osx.cx mac上运行windows软件
+	-  只能安装现有列出的软件  几乎都是游戏类的  没几种 其他软件怎么安装？
+
+- Shottr_1.7.2_osx.cx 截图软件 小巧  快捷键不会用 也设置不了ctlr+cmd+1 提示冲突
+- Snagit_2023.2.0_osx.cx  屏幕截图和录制  功能比较复杂
+  - 启动后在顶部菜单栏 用起来比较方便 且支持超长截图  
+
+- Smooze_Pro_2.0.72_osx.cx  鼠标增强 表现方式  
+  - 鼠标滚轮好像变快了 原来雷电鼠滚轮bug好像好了
+  - 确实解决了鼠标滚轮bug 可以调低 滚轮加速 滚轮单步距离
+  
+- OmniPlayer PRO 2.0.16 MAS [HCiSO]  视频播放
+  
+- BetterZip > Bandzip  压缩软件
+
+- Sensei For Mac 1.5.9 系统清理软件 更简洁
+- CleanMyMac_X_4.15.1_osx.cx 系统清理软件
+
+- Synergy Pro-macwk.cn  键盘和鼠标共享
+  
+- Path Finder For Mac 	功能强大的文件管理工具
+  
+- Commander_One_PRO_3.8_osx.cx 文件管理  
+	- 功能更强大 适合拖来拖去
+	- 没有右键剪切
+
+- QSpace_Pro_4.3.2_osx.cx  
+	- 类似windir 但是分页是整个页面 不是单独的区域 适合稳定的开发目录
+	- 有剪切 可添加文件夹书签
+
+
+
+## 开发
+- MWeb md写作软件 -非必需  可以用 vscode
+
+
+
+### git软件
+	- Sublime_Merge_2_2087_osx.cx  已经损坏 无法安装
+	- Tower_PRO_9_2-osx.cx  运行注册机 点击写入 重启app
+	- GitKraken 9.8.1
+	
+
+
+
+
+
+
+
+
 
 
 

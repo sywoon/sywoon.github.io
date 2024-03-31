@@ -1,13 +1,26 @@
 # 🔙[cocos2dx](/docs/cocos2dx/)
+
 [源码](https://github.com/cocos2d/cocos2d-x/tags)
 [cocos2dx论坛](https://forum.cocos.org/c/cocos2d-x)
 [参考](https://blog.csdn.net/qq_41506812/article/details/130363574)
 - tests工程没有xcode工程文件 怎么用？：tests/cpp-test/
 - 别用templates/cpp-template-default里面的工程   因为这是用于cocos命令方式创建新工程的模版 路径配置相对cocos文件夹并不同
 
+## 下载最新版本
+[cocos2dx3.17.2](https://www.cocos2d-x.org/download)
+注意：这里下载的版本内容包含了extern中的第三方库 tools中cocos命令工具
+- 和github中cocos2d-x-cocos2d-x-3.17.2+cocos2d-x-3rd-party-libs-bin-3-deps-158中下载的区别
+	- 少了：extern/fbx-conv
+	- 多了：
+    	- tests/cpp-tests/Resource/ccs-res
+    	- tools/bindings-generator
+    	- tools/cocos2d-console
+    	- tools/fbx-conv
+    	- web js项目相关内容
+- [早期版本](https://www.cocos2d-x.org/download/version)
 
 
-
+---
 ## win环境准备
 ### 1. 下载
 - cocos2d-x-cocos2d-x-3.17.2.zip
@@ -15,6 +28,9 @@
 	- 用python download-deps.py 也可以 会慢很多
 	- 测试发现行不通：无法下载cocos2d-x-3rd-party-libs-bin-3-deps-158.zip 
 	- https://github.com/cocos2d/cocos2d-x-3rd-party-libs-bin/archive/v3-deps-158.zip
+- cocos2d-x-3rd-party-libs-src
+  - 后来遇到freetype编译不过的问题 考虑从源头自己编译库
+  - 对应bin版本问题 最新的v3版本和3.17.2是对不上 额外下载了tagv3.4来尝试
 - 安装后发现cocos命令找不到 通过github可以看到tools/cocos2d-console文件夹颜色不同 点击后可跳转
 - cocos2d-console git@github.com:cocos2d/cocos2d-console.git 解压到tools目录
 - bindings-generator git@github.com:cocos2d/bindings-generator.git 解压到tools目录
@@ -66,6 +82,132 @@
 
     Please restart the terminal or restart computer to make added system variables take effect
 ```
+
+---
+## mac环境准备
+
+
+
+## cocos2dx-3.17.2 ---- xcode 14.0.1 项目移植
+[案例来源](https://blog.csdn.net/qq_41506812/article/details/130363574)
+
+### 环境准备
+[cocos3.17.2完整版]((https://www.cocos2d-x.org/download))
+xcode15.3 文档中的是14.0.1
+python-2.7.18-macosx10.9 文档中是pyton2.7.14 
+
+- 1. 创建新工程
+	- cd cocos2d-x-3.17.2/tools/cocos2d-console/bin 
+	- ./cocos new Hello -p cn.game.hello -l cpp -d /Users/s/Documents/cocos
+
+- 2. 用xcode打开 Hello/proj.ios_mac/Hello.codeproj  双击直接打开也行
+- 3. 选择Hello-mobil > ios 17.4 模拟器 第一次需要安装 点get即可 7.23g
+- 4. 设置debug运行的库类型 属性：targets：Hello-mobile:Build settings:  
+	 拖到最底下User-Defined:Valid-archs:Debug 将armv7删除 修改为arm64 x86_64  
+	 保留release不变还是arm64 armv7  
+	 实际armv7在xcode高版本后已经不再支持 可以删除了
+
+
+
+
+
+---
+## 编译cocos2d-x-3rd-party-libs-src工程
+1. 下载后发现里面没有库的源码 根据readme 先安装brew环境
+```
+	brew update
+	brew install git
+	brew install cmake
+	brew install autoconf
+	brew install automake
+	brew install libtool
+```
+2. 编译库
+```
+	./build.sh -p=platform --libs=libs --arch=arch --mode=mode --list
+		libs:all png,lua,jpeg,webp...
+		platforms: ios, mac, android, linux and tizen
+		arch:all ios Android Mac 
+			- for iOS, they are "armv7, arm64, i386, x86_64"
+			- for Android, they are "arm,armv7,arm64,x86"
+			- for Mac, they are "x86_64"
+		mode:release debug
+		list:看库版本
+
+	./build.sh -p=mac --libs=freetype --arch=arm64 --mode=release  报错：mac不支持arm64
+	./build.sh -p=ios --libs=freetype --arch=arm64 --mode=release  得到libfreetype.a
+	./build.sh -p=ios --libs=all --arch=armv7,arm64 --mode=release
+	contrib目录下 会自动下载源文件
+	build目录得到所有库的编译二进制文件
+	
+```
+./build.sh -p=mac --libs=png --arch=x86_64 --mode=release
+有很多编译报错！！
+```
+	Undefined symbols for architecture arm64:
+  "_png_init_filter_functions_neon", referenced from:
+      _png_read_filter_row in libpng16.a[10](pngrutil.o)
+ld: symbol(s) not found for architecture arm64
+
+```
+
+### build.sh分析
+#### libs的下载
+1. 通过contrib/src/main.mak查看到下载库的源头
+  ```
+	TOPSRC ?= ../../contrib
+	TOPDST ?= ..
+	SRC := $(TOPSRC)/src
+	TARBALLS := $(TOPSRC)/tarballs
+
+    # Common download locations
+	GNU := http://ftp.gnu.org/gnu
+	SF := https://downloads.sourceforge.net/project
+	GITHUB := https://github.com
+  ```
+2. 通过contrib/src/png/rules.mak 查看目标lib的路径
+  ```
+    PNG_VERSION := 1.6.16
+	PNG_URL := $(SF)/libpng/libpng16/older-releases/$(PNG_VERSION)/libpng-$(PNG_VERSION).tar.xz
+
+	$(TARBALLS)/libpng-$(PNG_VERSION).tar.xz:
+		$(call download,$(PNG_URL))
+
+  得到：
+	https://downloads.sourceforge.net/project/libpng/libpng16/older-releases/1.6.16/libpng-1.6.16.tar.xz
+	会判断是否已经下载过了 在contrib/tarballs/目录下 所有第三方库都在这个目录里
+  ```
+
+
+### third libs
+#### box
+https://github.com/erincatto/Box2D
+```
+  $(TARBALLS)/libbox2d-git.tar.xz:
+	$(call download_git,$(BOX2D_GITURL),master,f655c603ba9d83f07fc566d38d2654ba35739102)
+  加载的是某个commit 不好找 直接下载了 v2.4.1 2020.10.18
+```
+
+
+#### png
+[src](https://sourceforge.net/projects/libpng/files/libpng16/)
+使用1.6.16 最新1.6.43
+
+
+#### freetype2
+[src](https://downloads.sourceforge.net/project/freetype/freetype2/2.5.5/freetype-2.5.5.tar.gz)
+```
+FREETYPE2_VERSION := 2.5.5
+FREETYPE2_URL := $(SF)/freetype/freetype2/$(FREETYPE2_VERSION)/freetype-$(FREETYPE2_VERSION).tar.gz
+```
+
+
+#### zlib
+[src](http://zlib.net/fossils/zlib-1.2.8.tar.gz)
+ZLIB_VERSION := 1.2.8
+ZLIB_URL := http://zlib.net/fossils/zlib-$(ZLIB_VERSION).tar.gz
+
+
 
 
 
@@ -198,23 +340,38 @@ If required do clean project and run
 	GCevicePhysicalInput.h
 	@property (atomic, strong, nullable) dispatch_queue_t queue API_AVAILABLE(macos(14.0), ios(17.0), tvos(17.0));
 ```
-解决1：无效 找错位置了 不是MyGame的设置
+- 解决1：无效 找错位置了 不是MyGame的设置
 	- target改为12.0及以上  
 	- Product:clean build folder 重新编
-解决2：成功 
+- 解决2：成功 
 	- 选中cocos2d_libs:build settings:点击all 否则显示不全
 	- 找到deplyment那块 修改macOS Deployment Target:macOS 10.7 改为macOS12.0
 	- 注意：一定要clean build folder再重编
 	
-	
+
 #### 4. Comnand Libtool failed with a nonzro exit code
+- 没找到原因
+
+#### 5. Undefined symbol:_FT_Done_Face
+- 说是和freetype库相关 但是cocos2d_libs已经编译过 报错的是MyGame主工程
+```
+	具体错误：
+	Showing Recent Issues
+	Building for 'iOS-simulator', but linking in object file (/Users/s/Library/Developer/Xcode/DerivedData/Hello-aaihcgxgfjxqzvcahhlwlkhavmmr/Build/Products/Debug-iphonesimulator/libcocos2d iOS.a[743](btCollisionAlgorithm.o)) built for 'iOS'
+	解决：
+	您正在为 iOS 模拟器（iOS-simulator）构建项目，但却尝试链接一个为 iOS 设备（iOS）编译的库文件。
+```
 
 
+
+
+---
 ### 编译ios版本报错
 1. 修改bundle com.cocos2dx.demo 使用测试provision
 2. Comnand Libtool failed with a nonzro exit code 问题同mac 绕不过
-3. 
-
+改为真机 而非模拟器 可正常编译 并跑起来
+3. 第一次运行比较慢
+Copying shared cache symbols from iPhone (7% completed)
 
 
 
