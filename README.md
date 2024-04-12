@@ -40,8 +40,36 @@
 
 ## 🔸[cocos2dx引擎](/docs/cocos2dx/)
 
+## 🔸[cocoscreator引擎](/docs/cocoscreator/)  
 
 ## 🔸[unity引擎](/docs/unity/)
+
+
+## 其他引擎
+
+### Axmol Engine
+- [Axmol Engine 从v4分支]([Axmol Engine](https://github.com/axmolengine/axmol?tab=readme-ov-file))
+- [Axmol wasm版本demo](https://axmol.netlify.app/wasm/cpp-tests/cpp-tests)
+- [Axmol fgui版本demo](https://axmol.netlify.app/wasm/fairygui-tests/fairygui-tests)
+```
+    Axmol Engine是 Cocos2d-x-4.0 的另一个更激进的分支，它完全支持所有平台的 OpenAL、单纹理多 GPU 纹理处理程序、C++ 17/20
+    以下是自 cocos2d-x 分叉以来发生的一些重要变化：
+
+    C++ 17/20 standard
+    工具适用于 python 3
+    Apple M1, Android x64, Apple tvOS
+    Windows x64 构建支持
+    Windows video player using Microsoft Media Foundation
+    Openal on all platforms, extended wav formats including: MS-ADPCM, ADPCM
+    Use modern GL loader glad
+    Google Angle renderer backend
+    ASTC 4x4/6x6/8x8 and ETC2 RGB/RGBA
+    Extensions - e.g. Effekseer, FairyGUI, Live2D, Spine
+    Modularized optional extension
+```
+
+### [google angle渲染底层](https://github.com/google/angle)
+
 
 
 ------------------------------------

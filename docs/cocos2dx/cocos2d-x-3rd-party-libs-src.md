@@ -3,6 +3,7 @@
 - [mingw32](https://github.com/meiry/cocos2d-x-3rd-party-libs-src-mingw32)
 - [m1相关的探讨](https://discuss.cocos2d-x.org/t/apple-m1-xcode-build-fails/52202/23)
 - [[bugfix] iOS compile error](https://github.com/cocos2d/cocos2d-x/pull/20634)
+- [cocos2d-x-3rd-party-libs-src-mingw32]([cocos2d-x-3rd-party-libs-src-mingw32](https://github.com/meiry/cocos2d-x-3rd-party-libs-src-mingw32?tab=readme-ov-file))
 
 
 
@@ -36,8 +37,8 @@
     ./build.sh -p=ios --libs=all --arch=armv7,arm64 --mode=release
     contrib目录下 会自动下载源文件
     build目录得到所有库的编译二进制文件
-    
 ```
+
 
 ./build.sh -p=mac --libs=png --arch=x86_64 --mode=release
 有很多编译报错！！
@@ -48,6 +49,8 @@
 ld: symbol(s) not found for architecture arm64
 
 ```
+
+
 
 ### 1. build.sh分析
 #### 1.1 libs的下载

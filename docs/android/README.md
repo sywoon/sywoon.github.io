@@ -2,6 +2,7 @@
 
 
 ## android日常
+[gradle下载](https://mirrors.cloud.tencent.com/gradle/)
 
 
 
@@ -19,12 +20,43 @@
 
 ## [as编程](/docs/android/androidstudio.md)
 
+- [pradle-wrapper.properties](distributionUrl=https://mirrors.cloud.tencent.com/gradle/gradle-7.4.2-all.zip)
 
+- build.gradle project
+```
+   repositories {
+        maven { url 'https://mirrors.cloud.tencent.com/maven/' }
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/jcenter' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        maven { url "https://nexus.bsdn.org/content/groups/public/" }
+        maven { url "https://jitpack.io" }
+        jcenter()
+        maven { url 'https://dl.google.com/dl/android/maven2/' }
+        google()
+    }
 
+   dependencies {
+     classpath 'com.android.tools.build:gradle:4.2.2'
+```
 
+- build.gradle module
+```
+   namespace 'org.cocos.hello'
+```
 
-
-
+- build cmd
+```
+  调试：
+   gradlew clean
+   gradlew build --stacktrace
+  出包:
+   set "JAVA_HOME=C:\Program Files\Android\Android Studio\jbr"
+   set "path=C:\Program Files\Android\Android Studio\jbr\bin;%path%"
+   call gradlew assembleDebug
+   call gradlew assembleRelase
+```
 
 
  
+
