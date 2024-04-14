@@ -2,6 +2,7 @@
 
 
 ## android日常
+[android studio](https://developer.android.google.cn/studio?hl=zh-cn)
 [gradle下载](https://mirrors.cloud.tencent.com/gradle/)
 
 
