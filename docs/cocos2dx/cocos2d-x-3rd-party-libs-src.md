@@ -215,7 +215,7 @@ ZLIB_URL := http://zlib.net/fossils/zlib-$(ZLIB_VERSION).tar.gz
     make
 ```
 
-### 1.3 vs编译
+### 1.4 vs编译
 ```
   cmake -G "Visual Studio 15 2017" ..
   cmake -G "Visual Studio 17 2022" ..
@@ -224,7 +224,82 @@ ZLIB_URL := http://zlib.net/fossils/zlib-$(ZLIB_VERSION).tar.gz
 
 
 
+## 四、cocos2dx2.2.6 libs windows-x64
+没找到x64的libs 只好自己编译
 
+1. curl
+cocos2d-x-3rd-party-libs-src-3\contrib\src\curl\
+rules.mak
+http://curl.haxx.se/download/curl-7.52.1.tar.gz
+
+
+2. iconv
+项目中用了源码 来自eyu_long2\TwMobile-cocos2d\cocos2dx\platform\third_party\android\prebuilt\libiconv\
+是很早的版本2008年  版本号未知？
+自己从官方下载
+https://www.gnu.org/software/libiconv/
+https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.17.tar.gz
+
+
+3. libjpeg
+cocos2d-x-3rd-party-libs-src-3\contrib\src\jpeg\
+http://www.ijg.org/files/jpegsrc.v9b.tar.gz
+
+4. libpng
+cocos2d-x-3rd-party-libs-src-3\contrib\src\png\
+SF := https://downloads.sourceforge.net/project
+$(SF)/libpng/libpng16/older-releases/1.6.16/libpng-1.6.16.tar.xz
+https://downloads.sourceforge.net/project/libpng/libpng16/older-releases/1.6.16/libpng-1.6.16.tar.xz
+
+5. libtiff
+cocos2d-x-3rd-party-libs-src-3\contrib\src\tiff\
+http://download.osgeo.org/libtiff/old/tiff-4.0.3.tar.gz
+
+
+6. libwebp
+cocos2d-x-3rd-party-libs-src-3\contrib\src\webp\
+http://downloads.webmproject.org/releases/webp/libwebp-0.5.0.tar.gz   2015-12-23
+发现0.5.1的版本 有x64和x32
+
+所有版本：http://downloads.webmproject.org/releases/webp/
+libwebp-1.4.0-windows-x64.zip    2024-04-13
+libwebp-1.4.0.tar.gz             2024-04-13
+最新版本只有x64
+
+
+7. OGLES
+没找到库源码 根据头文件glew.h glxew.h wglew.h猜测都是glew的库
+glew.h 是用于 Linux 和 macOS 的头文件，而 glxew.h 是用于 X Window 系统的 OpenGL 扩展，wglew.h 是用于 Windows 平台的
+https://glew.sourceforge.net/
+根据之前的头文件 发现是2008年的版本 对应GLEW 1.5.1 年份对上了 除了mingw32外新增了cygwin的支持
+最新2.1.0 2017.7.31  看来废弃很久了 但支持x64
+
+
+
+8. pthread
+根据头文件 发现版本是2.8.0 2005年
+ftp://sourceware.org/pub/pthreads-win32 
+使用flashFXP远程连接 可以看到所有历史版本从2002-2005
+也可以直接用explore打开
+pthreads-w32-2-8-0-release.exe是一个解压文件 
+== pthreads-w32-2-8-0-release.tar.gz + dll库
+发现prebuilt-dll-2-9-1-release带了64位的版本！！！
+
+google最新结果 说windows不支持原始的pthreads 
+可以使用pthreads4w代替
+https://sourceforge.net/projects/pthreads4w/files/
+下载了2012.7.12 2.9.1
+2018.8.8 2.11.0
+2018.8.8 3.0.0 可能是某人一起上传的
+暂时没用
+
+
+9. zlib
+cocos2d-x-3rd-party-libs-src-3\contrib\src\zlib\
+http://zlib.net/fossils/zlib-1.2.8.tar.gz  2013-04-28
+所有版本：http://zlib.net/fossils/
+zlib-1.3.1.tar.gz	2024-01-22
+都是源码 需要自己编译
 
 
 

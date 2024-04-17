@@ -5,6 +5,11 @@
 ## [laya2.5.0](/docs/laya/laya2.5.0/README.md)
 - 项目里用的最多的版本
 
+### [文字渲染中的尺寸计算](/docs/laya/laya2.5.0/文字测量.md)
+ctx.measureText
+
+
+
 ## [laya2.13.4](/docs/laya/laya2.13.4/README.md)
 - 打算升级的目标版本
 

@@ -766,8 +766,9 @@ Tween+Ease 实现各种动画效果
 - api
     - from(target, props, duration, ease=null, complete=null, delay=0, coverBefore=false, autoRecover=true)
     - to 同上
-    - 属性：位置 alpha 轴心 大小
-
+    - props：位置 alpha 轴心 大小
+    - ease: 缓动类型 [案例](https://layaair2.ldc2.layabox.com/demo2/?language=zh&category=2d&group=Tween&name=EaseFunctionsDemo)
+    - 注意：通过ease的控制 实际属性范围会超出属性目标值 因为有弹性缓冲功能
 
 
 
