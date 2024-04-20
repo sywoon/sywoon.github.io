@@ -227,36 +227,196 @@ ZLIB_URL := http://zlib.net/fossils/zlib-$(ZLIB_VERSION).tar.gz
 ## 四、cocos2dx2.2.6 libs windows-x64
 没找到x64的libs 只好自己编译
 
-1. curl
+### 编译环境准备
+[MinGW-w64](https://www.mingw-w64.org/downloads/)
+[msys2](https://www.msys2.org/)
+
+1. 下载 msys2-x86_64-20240113.exe 并默认安装
+2. 安装gcc环境 执行pacman -S mingw-w64-ucrt-x86_64-gcc
+  - gcc --version
+3. 进入windows的某个盘 /d/
+
+
+
+###　1. curl
 cocos2d-x-3rd-party-libs-src-3\contrib\src\curl\
 rules.mak
 http://curl.haxx.se/download/curl-7.52.1.tar.gz
 
 
-2. iconv
+### 2. iconv
 项目中用了源码 来自eyu_long2\TwMobile-cocos2d\cocos2dx\platform\third_party\android\prebuilt\libiconv\
 是很早的版本2008年  版本号未知？
 自己从官方下载
 https://www.gnu.org/software/libiconv/
-https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.17.tar.gz
+https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.17.tar.gz  最新版本
+历史列表：
+https://ftp.gnu.org/pub/gnu/libiconv/
+
+- [genwin32版本](https://gnuwin32.sourceforge.net/packages/libiconv.htm)
+  - 只有2004年的 下载： Complete package, except sources	 	Setup
+
+- 头文件可以看到 
+```
+  旧版 ard _LIBICONV_VERSION 0x010D 源码
+  旧版 win32 _LIBICONV_VERSION 0x0109 头文件+lib
+  1.17 2022-05-15 _LIBICONV_VERSION 0x0111
+  1.15 2017-02-02 _LIBICONV_VERSION 0x010F
+  1.13.1 2009-06-30 _LIBICONV_VERSION 0x010D 原始ard源码版本
+  1.12 2007-11-11 _LIBICONV_VERSION 0x010B
+  1.10 2005-07-26 _LIBICONV_VERSION 0x010A
+  1.9.2 2004-01-23 _LIBICONV_VERSION 0x0109 原始win32 lib版本
+  1.8 2002-05-29 _LIBICONV_VERSION 0x0108
+```
+
+- iconv的cpp封装
+```
+  有个比较麻烦的地方 输出需要一个char*地址 而且大小也是iconv后才知道
+  一般根据input的长度*3来作为outbuff的大小 再通过outsize精准定位输出长度
+  由于字符串转换后 可能中间包含\0导致 直接用std::string 或 char*来输出 都会截断问题
+  再次作为源头进行转换时  将出现部分字符串丢失 甚至完全转换失败
+```
+- 找了几个github上用c++方式的封装
+```
+  iconv_wrap-master
+    纯粹封装成一个类 暴露了基本函数open close tranlate
+    没对字符串做控制 都是原始的char*
+  iconv_wrapper-master
+    封装得比较复杂 转为string保存 转换失败会resize大小
+  iconvpp-master 日本人写的
+    convert(const std::string& input, std::string& output)
+      std::vector<char> buf(buf_size_); 临时缓存 大小固定
+      while (0 < src_size) {  一段一段转 不会有截断位置问题？
+        dst.append(&buf[0], buf.size() - out_size); 追加到临时string
+      dst.swap(output); 一次转给外部的string
+  iconvpp-master2 名字相同 韩国人
+    用了boost和大量的std函数 对返回结果做了处理
+    std::vector<char> output( block_size );  固定大小 且外部传入的模板参数
+    优点：根据参数名 了解到iconv的insize和outsize都是可修改 而且是甚于大小 不是转换后的字符串大小！！
+
+  xqj项目： 初始字符串有点奇怪 不是GBK UTF-8 效果一样？
+    static CConv s_conv("GBK//TRANSLIT", "utf-8");
+    static CConv s_conv("utf-8", "GBK");
+
+  小结：
+    iconv(m_hConv, (const char**)&pInBuf, (size_t*)&nInBufLen, &pOutBuf, (size_t*)&outLeft)
+    输入大小和输出大小都是可变的 且初始传入的值必须符合buf的情况
+    转换后 若成功则insize变成0 outsize为剩余大小  
+    因为一开始无法估计需要的大小 所以一般用insize*3作为outsize
+    转换成功后 再resize(outsize-outleft) 让string精确实际大小 
+    且可通过size重新作为输入 转另一种字符
+    即使resize后：ansi2.length() == ansi2.size() 说明两者相同！
+
+  解决方案：
+  c++ 传入instr+insize 输出outstr&+outsize 并且按转后的实际大小resize outstr
+    可以设计一个临时的string对象 作为转化缓存 用insize×3作为最小size
+    再append到outstr.append(&buf[0], buf.size() - out_size);  //注意outsize是偏移值 有看到负数？
+    可以用输出的对象 重新作为输入
+  c 传入inchar*+insize 输出outchar**+outsize 并在内部malloc内存 由外部使用后释放
+```
 
 
-3. libjpeg
+
+- 1.13.1和项目内的差异对比:去除了很多@符号
+```
+  对比iconv.in 猜测头文件使用命令生成的 这里是模板
+  extern @DLL_VARIABLE@ int _libiconv_version; /* Likewise */
+  extern /*DLL_VARIABLE*/ int _libiconv_version; /* Likewise */
+
+  #define EILSEQ @EILSEQ@
+  #define EILSEQ EILSEQ
+
+  extern size_t iconv (iconv_t cd, @ICONV_CONST@ char* * inbuf, size_t *inbytesleft
+  extern size_t iconv (iconv_t cd, const char** inbuf, size_t *inbytesleft
+
+  #if @USE_MBSTATE_T@
+  #if @BROKEN_WCHAR_H@
+  #if USE_MBSTATE_T
+  #if BROKEN_WCHAR_H
+
+  #if @USE_MBSTATE_T@
+  #if USE_MBSTATE_T
+
+  #if @HAVE_WCHAR_T@
+  #if HAVE_WCHAR_T
+
+   .c文件差异非常大 
+```
+- 编译最新的1.17版本
+```
+  msys2
+  android:
+  ./configure --prefix=/usr/local
+
+  win32:
+  ./configure --host=i686-w64-mingw32 --prefix=/usr/local
+
+  win64:
+  ./configure --host=x86_64-w64-mingw32 --prefix=/usr/local
+
+  make
+  make install
+```
+- vs2022编译x86 x64库 [参考](https://blog.csdn.net/qq_38421080/article/details/122897113)
+- [参考2 github x64](https://github.com/txwizard/iconv_x64_and_ARM) 基于1.15
+```
+  库编译成功了 但是执行不正确 另外不支持64位
+  ${SolutionDir}libs\iconv; 报错 找不到iconv.h
+  $(ProjectDir)..\libs\iconv; 正常  vs的bug？
+
+
+  error LNK2019: 无法解析的外部符号 __imp__iconv_open，
+  解决：
+  #ifdef __cplusplus
+    extern "C" {
+    #endif
+        #include "iconv.h"
+    #ifdef __cplusplus
+    }
+    #endif
+
+    #ifdef __cplusplus
+  }
+  #endif
+
+  error LNK2019: 无法解析的外部符号 __imp_libiconv_open，函数 "public: __cdecl CConv::CConv(char const *,char const *)" (??0CConv@@QEAA@PEBD0@Z) 中引用了该符号
+  解决：
+  除了库工程  使用的项目也需要新增USING_STATIC_LIBICONV
+
+  x64\iconv.lib : warning LNK4272: 库计算机类型“x86”与目标计算机类型“x64”冲突
+  解决：链接库目录错误了 lib的名字是一样的
+
+  64位机器上size_t问题 它的sizeof为8
+  解决：全部改为int
+```
+- [github上找到哦x64版本的iconv](https://github.com/txwizard/iconv_x64_and_ARM)
+基于1.15
+```
+  能编译出x64的dll和lib
+  但是测试案例都比较抽象
+  将lib和dll单独提取 重新创建测试工程 可以使用！！！
+
+  修改win32版本的库名称：
+    由于链接器：常规：输出文件：$(OutDir)$(TargetName)$(TargetExt)
+    所以修改 目标文件名：$(ProjectName)$(PlatformArchitecture) 改为：$(ProjectName)
+```
+
+### 3. libjpeg
 cocos2d-x-3rd-party-libs-src-3\contrib\src\jpeg\
 http://www.ijg.org/files/jpegsrc.v9b.tar.gz
 
-4. libpng
+### 4. libpng
 cocos2d-x-3rd-party-libs-src-3\contrib\src\png\
 SF := https://downloads.sourceforge.net/project
 $(SF)/libpng/libpng16/older-releases/1.6.16/libpng-1.6.16.tar.xz
 https://downloads.sourceforge.net/project/libpng/libpng16/older-releases/1.6.16/libpng-1.6.16.tar.xz
 
-5. libtiff
+### 5. libtiff
 cocos2d-x-3rd-party-libs-src-3\contrib\src\tiff\
 http://download.osgeo.org/libtiff/old/tiff-4.0.3.tar.gz
 
 
-6. libwebp
+### 6. libwebp
 cocos2d-x-3rd-party-libs-src-3\contrib\src\webp\
 http://downloads.webmproject.org/releases/webp/libwebp-0.5.0.tar.gz   2015-12-23
 发现0.5.1的版本 有x64和x32
@@ -267,7 +427,7 @@ libwebp-1.4.0.tar.gz             2024-04-13
 最新版本只有x64
 
 
-7. OGLES
+### 7. OGLES
 没找到库源码 根据头文件glew.h glxew.h wglew.h猜测都是glew的库
 glew.h 是用于 Linux 和 macOS 的头文件，而 glxew.h 是用于 X Window 系统的 OpenGL 扩展，wglew.h 是用于 Windows 平台的
 https://glew.sourceforge.net/
@@ -276,7 +436,7 @@ https://glew.sourceforge.net/
 
 
 
-8. pthread
+### 8. pthread
 根据头文件 发现版本是2.8.0 2005年
 ftp://sourceware.org/pub/pthreads-win32 
 使用flashFXP远程连接 可以看到所有历史版本从2002-2005
@@ -294,7 +454,7 @@ https://sourceforge.net/projects/pthreads4w/files/
 暂时没用
 
 
-9. zlib
+### 9. zlib
 cocos2d-x-3rd-party-libs-src-3\contrib\src\zlib\
 http://zlib.net/fossils/zlib-1.2.8.tar.gz  2013-04-28
 所有版本：http://zlib.net/fossils/
