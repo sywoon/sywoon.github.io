@@ -307,7 +307,7 @@ python create_project.py -project MyGameC2 -package com.example.mygamec2 -langua
     问题依旧
 ```
 
-## 三、arm64参试1
+## 三、arm64尝试1
 
 1. 使用cocos2d-x-3rd-party-libs-bin-3-deps-148\覆盖原来的android库
    多了arm64-v8a
@@ -317,7 +317,7 @@ python create_project.py -project MyGameC2 -package com.example.mygamec2 -langua
 
 ## 四、cocos2d-x-v2 arm64 fork1
 
-参试先用这个工程编译通as arm64
+尝试先用这个工程编译通as arm64
 
 - 问题1：
 
@@ -533,10 +533,11 @@ app\build\intermediates\apk\debug\hello-debug.apk  为什么里面只有arm64的
     删除x86库
 ```
 
-为什么bat比as编译debug要慢很多？ 一个增量 一个完整编译
-一个多种so 一个只有arm64
-因为Android Studio默认只为当前连接的设备或者选中的模拟器的架构编译SO库。
-当你运行或者调试你的应用时，这样做可以使编译时间更短
+- 为什么bat比as编译debug要慢很多？ 
+  - 一个增量 一个完整编译
+  - 一个多种so 一个只有arm64
+  - 因为Android Studio默认只为当前连接的设备或者选中的模拟器的架构编译SO库。
+  - 当你运行或者调试你的应用时，这样做可以使编译时间更短
 
 ### 1. arm64 hello基础上 复制cpptest工程
 
@@ -600,10 +601,15 @@ app\build\intermediates\apk\debug\hello-debug.apk  为什么里面只有arm64的
     中间目录：$(SolutionDir)..\..\temp\$(ProjectName)64\$(Configuration)\
 ```
 
-#### 1.1 libCocosDnshion工程
+### 1.0 准备win64第三方库
+从win32先复制一份 然后逐个替换为64位的版本  
+包含：curl iconv libjpeg libpng libtiff libwebp OGLES pthread zlib libraries  
+
+#### 1.1 libCocosDenshion工程
 
 - SetWindowLong(m_hWnd, GWL_USERDATA, (LONG)this); 找不到GWL_USERDATA
   解决：MciPlayer.cpp 头部新增定义
+  类似情况：Win102InputBox.cpp
 
 ```
 #ifdef _WIN64
@@ -621,11 +627,111 @@ app\build\intermediates\apk\debug\hello-debug.apk  为什么里面只有arm64的
     xcopy /Y /Q "$(ProjectDir)..\platform\third_party\win32\libraries\*.dll" "$(OutDir)"
     xcopy /Y /Q "$(ProjectDir)..\platform\third_party\win32\libraries\*.lib" "$(SolutionDir)..\..\temp\libs64\"
     )
+    解决：x64下 来源改为win64  重新制作第三方库库 采用x64的版本
 ```
 
 - CCSprite.obj : error LNK2001: 无法解析的外部符号 __imp___glewVertexAttribPointer
   估计也是32位库的问题:glew32 libzlib libpng libjpeg libtiff libwebp libiconv pthreadVCE2
-- 解决：
-- a 删除不用的库 tiff webp
-- b 下载源码 手动编译 glew zlib png jpeg iconv pthread
-- c 从creator库中复制64位的[版本](https://github.com/cocos/cocos-engine-external)
+- 可能解决：最终方案[参考](/docs/cocos2dx/cocos2d-x-3rd-party-libs-src.md?)
+  - a 删除不用的库 tiff webp
+  - b 下载源码 手动编译 glew zlib png jpeg iconv pthread
+  - c 从cocos2d-x-3rd-party-libs-src找源码
+  - d 从creator库中复制64位的[版本](https://github.com/cocos/cocos-engine-external)
+  - e 从github其他人提供的工程中寻找
+
+- 问题1：
+```
+  error LNK2001: 无法解析的外部符号 "public: virtual void __cdecl cocos2d::CCDataVisitor::visit(class cocos2d::CCBool const *)" (?visit@CCDataVisitor@cocos2d@@UEAAXPEBVCCBool@2@@Z)
+  解决：vs中打开CCDataVisitor.cpp文件 右键编译 正常通过后 再次编译cocos工程就没这个报错了 缓存问题？
+```
+
+- 问题2：
+```
+    void CC_DLL CCLog(const char * pszFormat, ...) CC_FORMAT_PRINTF(1, 2);
+    解决：
+    #elif defined(__has_attribute)
+    #if __has_attribute(format)
+    #define CC_FORMAT_PRINTF(formatPos, argPos) __attribute__((__format__(printf, formatPos, argPos)))
+    #else  新增这一段
+    #define CC_FORMAT_PRINTF(formatPos, argPos)
+    #endif
+```
+
+
+### 1.3 libExtensions
+```
+  生成事件中 额外的库：
+  if not exist "$(OutDir)" mkdir "$(OutDir)"
+    xcopy /Y /Q "$(ProjectDir)..\..\external\libwebsockets\win64\lib\*.*" "$(OutDir)"
+    xcopy /Y /Q "$(ProjectDir)..\..\external\sqlite3\libraries\win64\*.*" "$(OutDir)"
+
+  解决： 
+  新建libwebsockets\win64
+  从D:\Cocos\cocos-engine-external-3.8.2\win64\libs\复制websockets.lib .dll
+
+  重新整理sqlite3的目录 原来公用了include 现在改为独立 类似上面
+  D:\Cocos\cocos-engine-external-3.8.2\win64\include\sqlite3\
+  同时修改vs工程include地址
+```
+
+### 其他问题
+- 问题1：编译x64通过后 运行报错
+```
+  缺少：libcrypto-1_1-x64.dll libssl-1_1-x64.dll 
+    从C:\ProgramData\cocos\editors\Creator\3.8.0\resources\tools\openSSLWin64复制一份
+  缺少：libuv.dll
+    从C:\ProgramData\cocos\editors\Creator\3.8.0\resources\resources\3d\engine\bin\.editor复制
+```
+
+- 问题2： 精灵对象为null
+```
+    CCSprite* pSprite = CCSprite::create("HelloWorld.png");
+    补路径：
+    #ifdef _WIN64
+        searchPaths.push_back("../../Resources");  //hello\proj.win32\x64\Debug 比hello\proj.win32\Debug.win32多一层
+    #endif
+
+    还是报错 跟踪发现png解析问题
+    核对了库 和一样
+    定位代码：
+    #define PNG_LIBPNG_VER_STRING "1.4.5beta04"
+    png_create_read_struct(PNG_LIBPNG_VER_STRING, 0, 0, 0);
+    发现 这个版本字符串必须要和库一致 in png.c 
+    查看creator源码 找到这个字符串 发现定义在png.h中 而非.c
+    由于x86和x64版本不同  
+    #define PNG_LIBPNG_VER_STRING "1.6.37"
+    #define PNG_LIBPNG_VER_STRING "1.4.5beta04"
+    原因：引入库地址错了
+    修改：找到所有的工程include 全部改为64的地址
+    注意：除外
+    $(ProjectDir)..\..\..\cocos2dx\platform\win32 这里存放的是cpp源码
+```
+
+- 问题3： 缺少uv.h
+```
+    libwebsockets.h
+    #ifdef LWS_WITH_LIBUV
+    #include <uv.h>
+    #ifdef LWS_HAVE_UV_VERSION_H
+    #include <uv-version.h>
+    #endif
+    #endif /* LWS_WITH_LIBUV */
+
+    发现是新引入的websocket库带来的
+    从D:\Cocos\cocos-engine-external-3.8.2\win64\libs\复制uv库 和libuv.lib libuv.dll
+    加入到third_party\win64\libraries 并添加include
+    又缺openssl 同样方式复制
+```
+
+- 问题4：CHECK_GL_ERROR_DEBUG();
+```
+    {
+        GLenum __error = glGetError();  实际为这个函数调用报错
+		if (__error) {
+			CCLog("OpenGL error 0x%04X in %s %s %d\n", __error, __FILE__, __FUNCTION__, __LINE__);
+		}
+    }
+```
+
+
+
