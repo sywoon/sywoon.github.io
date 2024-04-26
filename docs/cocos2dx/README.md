@@ -14,6 +14,9 @@
 ## fsgame
 - [hw封神项目](/docs/cocos2dx/cocos2dx3.17.1_fsgame.md)
 
+## dragon
+- [hw封神项目](/docs/cocos2dx/cocos2dx3.17.2_dragon.md)
+
 
 ## [cocos2.2.6 arm64 x64](/docs/cocos2dx/cocos2.2.6_64位.md)
 2023年起arm架构的android新机器不再支持32位应用

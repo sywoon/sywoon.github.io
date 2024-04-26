@@ -437,7 +437,7 @@ https://ftp.gnu.org/pub/gnu/libiconv/
   解决：全部改为int
 ```
 
-- [github上找到哦x64版本的iconv](https://github.com/txwizard/iconv_x64_and_ARM)
+- [github上找到的x64版本的iconv](https://github.com/txwizard/iconv_x64_and_ARM)
   基于1.15
 
 ```
@@ -471,6 +471,12 @@ SF := https://downloads.sourceforge.net/project
 $(SF)/libpng/libpng16/older-releases/1.6.16/libpng-1.6.16.tar.xz
 https://downloads.sourceforge.net/project/libpng/libpng16/older-releases/1.6.16/libpng-1.6.16.tar.xz
 从cocos-engine-external-3.8.2提取
+
+https://downloads.sourceforge.net/project/libpng/libpng16
+1.6.43	2024-02-23 最新版本
+
+
+
 
 ### 5. libtiff
 cocos2d-x-3rd-party-libs-src-3\contrib\src\tiff

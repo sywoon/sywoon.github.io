@@ -1,0 +1,1 @@
+cmd /c python tools_all.py

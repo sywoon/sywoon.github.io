@@ -26,6 +26,7 @@
 ### 1. 创建项目  新项目生成在project/下
 
 ```
+python2.7
 cd tools/project-creator/
 python create_project.py -project MyGameC2 -package com.example.mygamec2 -language cpp
 ```
@@ -114,6 +115,14 @@ python create_project.py -project MyGameC2 -package com.example.mygamec2 -langua
 
 - warn 1：warning C4005: “__useHeader”: 宏重定义
   以前处理过 搜索不到了 待处理
+
+- 报错7：使用了cpptest工程后
+```
+    ExtensionsTest.obj : error LNK2005: ___iob_func 已经在 WebSocketTest.obj 中定义
+    和上面定义的冲突了？
+```
+
+
 
 ### 2. 2 准备ard环境和工具
 
@@ -586,6 +595,31 @@ app\build\intermediates\apk\debug\hello-debug.apk  为什么里面只有arm64的
 支持cpptest arm64位的版本成功运行！！！
 
 
+### arm64 cpptest工程 重新改回hello工程
+- Resource资源不同 
+```
+  build.gradle hello
+  最下面有自动复制功能
+  preBuild.dependsOn copyAssets
+  若选手动复制  注释这块
+```
+
+- jin/Androd.mk
+```
+  Class中的cpp编译方式不同
+  hello版本 直接加载了cpp文件
+  LOCAL_SRC_FILES := hellocpp/main.cpp \
+        ../../../Classes/AppDelegate.cpp \
+        ../../../Classes/HelloWorldScene.cpp
+
+   cpp版本额外单独封装了一个库 单独的android.mk
+   LOCAL_WHOLE_STATIC_LIBRARIES := cocos_testcpp_common
+   $(call import-module,projects/MyGameC2/)
+```
+
+
+
+
 ## 五、x64原生工程
 
 基于cocos2.2.6 已经不支持64位系统 最大卡点估计在第三库
@@ -608,13 +642,12 @@ app\build\intermediates\apk\debug\hello-debug.apk  为什么里面只有arm64的
 #### 1.1 libCocosDenshion工程
 
 - SetWindowLong(m_hWnd, GWL_USERDATA, (LONG)this); 找不到GWL_USERDATA
-  解决：MciPlayer.cpp 头部新增定义
-  类似情况：Win102InputBox.cpp
-
 ```
-#ifdef _WIN64
-    #define GWL_USERDATA        (-21)
-#endif
+   解决：MciPlayer.cpp 头部新增定义
+    #ifdef _WIN64
+        #define GWL_USERDATA        (-21)
+    #endif
+    类似情况：Win102InputBox.cpp
 ```
 
 #### 1.2 libcocos2d
@@ -660,11 +693,6 @@ app\build\intermediates\apk\debug\hello-debug.apk  为什么里面只有arm64的
 
 ### 1.3 libExtensions
 ```
-  生成事件中 额外的库：
-  if not exist "$(OutDir)" mkdir "$(OutDir)"
-    xcopy /Y /Q "$(ProjectDir)..\..\external\libwebsockets\win64\lib\*.*" "$(OutDir)"
-    xcopy /Y /Q "$(ProjectDir)..\..\external\sqlite3\libraries\win64\*.*" "$(OutDir)"
-
   解决： 
   新建libwebsockets\win64
   从D:\Cocos\cocos-engine-external-3.8.2\win64\libs\复制websockets.lib .dll
@@ -672,6 +700,11 @@ app\build\intermediates\apk\debug\hello-debug.apk  为什么里面只有arm64的
   重新整理sqlite3的目录 原来公用了include 现在改为独立 类似上面
   D:\Cocos\cocos-engine-external-3.8.2\win64\include\sqlite3\
   同时修改vs工程include地址
+
+  生成事件中 额外的库：
+  if not exist "$(OutDir)" mkdir "$(OutDir)"
+    xcopy /Y /Q "$(ProjectDir)..\..\external\libwebsockets\win64\lib\*.*" "$(OutDir)"
+    xcopy /Y /Q "$(ProjectDir)..\..\external\sqlite3\win64\lib\*.*" "$(OutDir)"
 ```
 
 ### 其他问题
@@ -734,4 +767,13 @@ app\build\intermediates\apk\debug\hello-debug.apk  为什么里面只有arm64的
 ```
 
 
+- 问题5：
+```
+  \v7.1A\lib\opengl32.lib : warning LNK4272: 库计算机类型“x86”与目标计算机类型“x64”冲突
+  opengl32.lib 从cocos-engine-external-github\win64\libs复制64位的版本
+```
 
+
+- 问题6：
+```
+```
