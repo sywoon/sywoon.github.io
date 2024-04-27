@@ -147,7 +147,7 @@
   编译得到curl.exe
   c 修改libcurl_shared 目标名称：libcurl-d 改为libcurl
   链接器:高级:导入库 build/lib/Debug/libcurl-d_imp.lib 改为：libcurl_imp.lib
-  
+  只有x64 尝试复制出win32 编译不过
 ```
 
 - opengl32
