@@ -71,6 +71,10 @@
 ### [google angle渲染底层](https://github.com/google/angle)
 
 
+------------------------------------
+# ⭐[OpenGL](/docs/opengl/)
+## 🔸[OpenGL中文基础视频教程](/docs/opengl/readme?id=🔸opengl中文基础视频教程)
+
 
 ------------------------------------
 # ⭐Mac& Win
