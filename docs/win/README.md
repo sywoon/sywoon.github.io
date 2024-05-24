@@ -32,6 +32,11 @@
 
 
 
+2 win+c 打开cortana  禁用之
+```
+  powershell 管理员打开	
+  Get-AppxPackage *Microsoft.549981C3F5F10* | Remove-AppxPackage
+```
 
 
 

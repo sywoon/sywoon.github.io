@@ -770,6 +770,19 @@ Tween+Ease 实现各种动画效果
     - ease: 缓动类型 [案例](https://layaair2.ldc2.layabox.com/demo2/?language=zh&category=2d&group=Tween&name=EaseFunctionsDemo)
     - 注意：通过ease的控制 实际属性范围会超出属性目标值 因为有弹性缓冲功能
 
+- 缓动动画事件控制
+```
+    compelte
+    props中加update 每帧调用
+    Laya.Tween.to(letterText, { y : 300, update: new Laya.Handler(this, this.updateColor,[letterText])}, 1000, Laya.Ease.bounceIn, Laya.Handler.create(this,this.changeColor,[letterText]), i * 100);
+```
+
+
+##### 2.8.3 时间轴动画
+
+- 有两种模式:通用的ani独立文件，可用于不同ui + ui内编辑的动画
+
+
 
 
 
