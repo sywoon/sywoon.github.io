@@ -40,5 +40,11 @@
 
 
 
+3 powershell 运行部分命令权限问题
+```
+	此系统上禁止运行脚本  about_Execution_Policies。
+	get-ExecutionPolicy  (查询当前策略设置)
+	set-ExecutionPolicy RemoteSigned (修改策略以执行prowershell脚本)
+```
 
- 
+
