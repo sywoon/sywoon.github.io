@@ -1,5 +1,136 @@
 # 🔙[mac](/README?id=🔸Mac日常)
 
+
+## mac编程环境
+
+### mac环境系统设置
+[参考1](https://imageslr.com/2020/03/19/mac-initialization.html)
+- 1. 关闭安装验证
+```
+  跳过打开 DMG 文件时的验证过程：
+	defaults write com.apple.frameworks.diskimages skip-verify -bool true
+	defaults write com.apple.frameworks.diskimages skip-verify-locked -bool true
+	defaults write com.apple.frameworks.diskimages skip-verify-remote -bool true
+  取消禁止安装第三方 App
+	sudo spctl --master-disable
+	defaults write com.apple.LaunchServices LSQuarantine -bool false
+```
+- 2. 禁用文字自动更正: 也可以在“系统设置-键盘-文本”中设置
+```
+defaults write -g NSAutomaticQuoteSubstitutionEnabled -bool false
+defaults write -g NSAutomaticDashSubstitutionEnabled -bool false
+defaults write -g NSAutomaticSpellingCorrectionEnabled -bool false
+```
+- 3. 关闭触控板在浏览器中的前进后退
+	系统设置 - 触控板 - 更多手势 - 在页面之间轻扫，取消勾选。
+
+
+
+
+
+
+### brew
+1. 安装	选择3北京外国语大学的点
+   ```
+	/bin/zsh -c "$(curl -fsSL https://gitee.com/huwei1024/HomebrewCN/raw/master/Homebrew.sh)"   #安装  选择清华点
+
+	bin/zsh -c "$(curl -fsSL https://gitee.com/huwei1024/HomebrewCN/raw/master/HomebrewUninstall.sh)"  #卸载
+   ```
+2. 中途会弹出安装xcode commmand tools  实际直接先安装xcode也更好-需要启动一次，同意协议
+3. 修改环境路径
+	```
+	open -e .zshrc  没找到这个文件 和.bash_profile的关系？
+	mac新版本默认用的zsh终端 对应的配置就是.zshrc  早期的mac用的bash
+	# HomeBrew
+	export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles
+	export PATH="/usr/local/bin:$PATH"
+	export PATH="/usr/local/sbin:$PATH"
+	# HomeBrew END
+	这是早期的路径 新的m1下的路径为：
+	export PATH="/opt/homebrew/bin:$PATH"  
+	export PATH="/opt/homebrew/sbin:$PATH"
+	```
+
+
+### 2. oh my zsh
+- 安装
+```
+sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+```
+- 修改主题
+```
+	open ~/.zshrc
+
+	# 找到 ZSH_THEME
+	# robbyrussell 是默认的主题
+	ZSH_THEME="robbyrussell"
+
+	# ZSH_THEME="样式名称" 
+
+	内部自带的主题：cd ~/.oh-my-zsh/themes && ls
+	卸载：uninstall_oh_my_zsh
+	安装后默认代替系统的zsh 若不行 手动执行：
+	sudo chsh -s $(which zsh) $(whoami)
+```
+- 安装插件
+```
+  安装 zsh-autosuggestion 与 autojump：提示输入的命令-使用往右箭头 + 用j+单词挑转到之前的位置
+	git clone https://github.com/zsh-users/zsh-autosuggestions.git $ZSH_CUSTOM/plugins/zsh-autosuggestions
+
+	# autojump
+	git clone https://github.com/wting/autojump.git
+	cd autojump
+	./install.py
+
+	git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH_CUSTOM/plugins/zsh-syntax-highlighting
+	输入命令后，如果命令正确，则高亮为绿色，反之高亮为红色。
+```
+- 插件配置
+```
+	vim ~/.zshrc
+	找到pugins位置 替换：
+	# Add wisely, as too many plugins slow down shell startup.
+	plugins=(git zsh-autosuggestions autojump zsh-syntax-highlighting)
+
+	[[ -s /home/zsh/.autojump/etc/profile.d/autojump.sh ]] && source /home/zsh/.autojump/etc/profile.d/autojump.sh
+	autoload -U compinit && compinit -u
+
+	source $ZSH/oh-my-zsh.sh
+```
+- 生效和验证
+```
+	source ~/.zshrc
+	输入命令时 会自动提示补全
+	打开过的目录 用j+前缀 不用敲全 也可以挑转到目录
+```
+- 同步
+```
+    .zshrc头部加上：
+	source ~/.bash_profile
+	source /etc/profile
+```
+
+
+### 3. git
+- 全局名称
+```
+git config --global user.email "sywoon@163.com"
+git config --global user.name "sywoon"
+```
+- git别名
+```
+~/.gitconfig
+[alias]
+	last = log -1
+	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow) %d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	co = checkout
+	ci = commit
+	st = status
+	br = branch
+	cp = cherry-pick
+```
+
+
 ## 一、mac软件下载
 - [osx](osx.cx) 终身vip会员 parallel这里下载 
   - shenglingdao   90….
@@ -143,6 +274,20 @@
 	可通过ssh s-mac@192.168.64.170登录这台电脑
 - 共享：远程管理：打开
 	打开vnc 并设置密码
+
+
+### 5.禁用mac的.DS_Store
+```
+	defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool TRUE
+	killall Finder
+	恢复：
+	defaults delete com.apple.desktopservices DSDontWriteNetworkStores
+	删除当前目录：
+	find . -name '.DS_Store' -type f -delete
+	删除所有：
+	sudo find / -name ".DS_Store" -depth -exec rm {} \;
+```
+
 
 
 
