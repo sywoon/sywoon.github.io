@@ -18,7 +18,7 @@
 
 ## win技巧
 
-1 任务管理器中判断exe是32位还是64位
+1. 任务管理器中判断exe是32位还是64位
 ```
   方法一: 任务管理器法
   任务管理器>>>进程(processes)>>
@@ -31,8 +31,7 @@
 ```
 
 
-
-2 win+c 打开cortana  禁用之
+2. win+c 打开cortana  禁用之
 ```
   powershell 管理员打开	
   Get-AppxPackage *Microsoft.549981C3F5F10* | Remove-AppxPackage
@@ -40,11 +39,34 @@
 
 
 
-3 powershell 运行部分命令权限问题
+3. powershell 运行部分命令权限问题
 ```
 	此系统上禁止运行脚本  about_Execution_Policies。
 	get-ExecutionPolicy  (查询当前策略设置)
 	set-ExecutionPolicy RemoteSigned (修改策略以执行prowershell脚本)
 ```
+
+
+
+## win11相关设置
+1. win11右键菜单
+```
+  切换到旧版右键菜单：
+  reg add "HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" /f /ve
+
+  恢复回Win11右键菜单：
+  reg delete "HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}" /f
+
+  重启Windows资源管理器生效：
+  taskkill /f /im explorer.exe & start explorer.exe
+```
+
+
+
+
+
+
+
+
 
 
