@@ -9,6 +9,16 @@
 安装Git-2.45.2-64-bit 去官方下载最新版本 且有多种gui软件
 [git官方book](https://www.git-scm.com/book/zh/v2)
 
+- terminal:扩展gitbash
+    - 安装时 勾选add a git bash profile to windows terminal
+    - 若错过了 后补：
+        - terminal：设置：新增一个profile
+        - Name: Git Bash
+        - command line:C:/Program Files/Git/bin/bash.exe -i -l  
+        - sharting directory: %USERPROFILE%
+        - icon:C:\Program Files\Git\mingw64\share\git\git-for-windows.ico
+        - 后面就可以通过新分页的创建箭头 选择git bash图标
+
 
 ### git环境
 - 创建ssh密钥

@@ -7,12 +7,16 @@
 
 
 
-### q-dir
+1. q-dir
 - 双击空白 返回上一页 ； 选项：列表视图：双击空白处
 - 关闭自带的zip 有些大的文件 速度比winrar慢很多
   - 选项：更多选项：关联：添加：选择winrar.exe
   - 修改对应的ext文件：*.rar;*.zip=C:\Program Files\WinRAR\WinRAR.exe
   - 注意：一定要点保存  直接点确定是没用的
+
+
+2. Listary 类似everything
+
 
 
 
@@ -45,6 +49,22 @@
 	get-ExecutionPolicy  (查询当前策略设置)
 	set-ExecutionPolicy RemoteSigned (修改策略以执行prowershell脚本)
 ```
+
+
+4. winget
+
+- 软件安装使用的winget，如果没有建议安装，因为部分命令行工具安装依赖这个包管理器。
+- [winget](https://github.com/microsoft/winget-cli/releases)
+```
+	- 安装后命令行中还是不能用 手动添加路径：
+	C:\Program Files\WindowsApps\Microsoft.DesktopAppInstaller_1.24.1551.0_x64__8wekyb3d8bbwe
+  删除路径中的：
+  %USERPROFILE%\AppData\Local\Microsoft\WindowsApps
+
+	注意：不是appstore的路径 这里的exe大小为0 而且还有python python3
+	C:\Users\admin\AppData\Local\Microsoft\WindowsApps 奇怪的是这里的exe为0k 但是能用
+```
+
 
 
 
