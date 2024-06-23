@@ -115,6 +115,9 @@
     - [emojikeyboard](https://emojikeyboard.top/)
     - [getemoji](https://getemoji.com/)
 
+## 🔸neovim
+- [neovim](/docs/knowledge/neovim.md)
+
 
 
 

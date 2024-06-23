@@ -9,6 +9,8 @@
 
 ## [git](/docs/knowledge/git.md)
 - git用法
+- [git日常问题](/docs/knowledge/git日常问题.md)
+
 
 ## [sourcetree](/docs/knowledge/sourcetree.md)
 - st日常积累
@@ -42,6 +44,8 @@
         - 自定义域名：https://raw.githubusercontent.com/sywoon/BlogPhoto/main
         
         
+## [neovim](/docs/knowledge/neovim.md)
+
 
 
 
