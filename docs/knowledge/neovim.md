@@ -12,13 +12,10 @@
 会将nvim自动加入环境路径
 
 
-## 插件
-[vim-plug](https://github.com/junegunn/vim-plug)
-
-
 
 ## windows从0开始
-[Neovim 配置实战：从0到1打造自己的IDE](https://blog.csdn.net/qq_55125921/article/details/127177442)
+[Neovim 配置实战：从0到1打造自己的IDE](https://blog.csdn.net/qq_55125921/article/details/127177442) 比较完整 插件废弃了
+[neovim入门指南(一)：基础配置](https://www.cnblogs.com/youngxhui/p/17730419.html) 类似上面 用了lazy插件
 
 ### 安装terminal
 win11默认就有 可以从商店安装；设置修改主题为one half dark；若后期快捷键和vim冲突 也可从这里修改
@@ -66,20 +63,26 @@ Proportional Spacing（比例）比例间隔版本 每个字符占用的水平�
     sudo apt-get install software-properties-common
     验证：
     nvim --version
+
+    安装后路径：
+    window: C:\Program Files\Neovim\share\nvim\runtime
+    Linux:  /usr/share/nvim/runtime
+    wsl:  \\wsl.localhost\Ubuntu-24.04\usr\share\nvim\runtime
 ```
 
 
 
-### neovim最基本的设置
+## neovim最基本的设置
 - 配置目录
 ```
-    git bash: usr/appdata/local/nvim
-    wsl: ~/.config/  == /home/usr/.config
+    windows: %USERPROFILE%\AppData\Local\nvim\
+    wsl: ~/.config/nvim/  == /home/usr/.config/nvim/
 ```
 
 - ~/.config/nvim/base.lua
 ```
-    -- vim.g.{name} 全局变量
+    -- vim.g.{name} 全局变量（global variables）
+    -- vim.o.{name} 全局选项（global options）
     -- vim.b.{name} 缓冲区变量
     -- vim.w.{name} 窗口变量
     -- vim.bo.{option} buffer-local选项
@@ -197,6 +200,9 @@ Proportional Spacing（比例）比例间隔版本 每个字符占用的水平�
     -- 底部会以文本方式显示当前模式如： -- INSERT -- ， -- VISUAL --后不在需要vim的模式提示
     -- 关闭后 用插件代替
     vim.o.showmode = false
+
+    -- 使用系统粘贴板
+    vim.o.clipboard = "unnamedplus"
 ```
 
 ### neovim快捷键
@@ -297,14 +303,51 @@ Proportional Spacing（比例）比例间隔版本 每个字符占用的水平�
 
 
 
-### 插件
+
+## 插件
+[vim-plug](https://github.com/junegunn/vim-plug)
+[查询流行的插件](https://github.com/rockerBOO/awesome-neovim)
 早期主要有 vim-plug 和 packer.nvim(已废弃) 两个
-最新lazy.nvim pckr.nvim 
+最新[lazy.nvim插件管理](https://github.com/folke/lazy.nvim) pckr.nvim 
+[LazyVim懒人配置 不是同一个东西](https://github.com/LazyVim/LazyVim)
 
 
+### lazy.nvim
+init.lua中添加
+```lua
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable", -- latest stable release
+    lazypath,
+  })
+end
+vim.opt.rtp:prepend(lazypath)
+ 
+require("lazy").setup()
+```
+- 分析
+```
+  vim.fn.stdpath("data")   -- /home/syw/.local/share/nvim/
+  该路径通常用于存储 Neovim 的用户数据，如插件、会话和其他持久性数据
 
+  Linux: ~/.local/share/nvim
+  macOS: ~/.local/share/nvim
+  Windows: C:\\Users\\{username}\\AppData\\Local\\nvim-data
+```
 
-
+- 安装
+下次进入nvim会判断和下载插件 通过:Lazy查看是否成功
+按q退出
+- 遇到的安装报错
+```
+    error delected while processing BufReadPost Autocommands for "*":
+    error executing lua callback:/usr/share/nvim/runtime/filetype.lua:35:
+```
 
 
 
