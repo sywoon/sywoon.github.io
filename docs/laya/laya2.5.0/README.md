@@ -3,10 +3,21 @@
 ## 环境搭建
 
 - npm install
+
 - 编译库 npm run build
+
 - 编译 npm run compile 复制 shader 文件到 bin/tsc/ 生成 bin/tsc indexTSC.html 中使用
+
 - 本地文档 npm run buildDoc 纯粹 api 文档 价值不大 因为有.d.ts 文件
+
 - 案例 cd src/samples & rollup -c 生成：bin/rollUp/bundle.js indexRollUp.html 中使用
+
+    官方的方案会报错： 正确使用 rollup --config rollup.config.js --bundleConfigAsCjs
+	```
+    [!] RollupError: Node tried to load your configuration file as CommonJS even though it is likely an ES module. To resolve this, change the extension of your configuration to ".mjs", set "type": "module" in your package.json file or pass the "--bundleConfigAsCjs" flag.
+	```
+    
+
 - 运行工具 tsc 依赖 bin 为根目录 
     - npm i lite-server live-server anywhere -D 不支持 
     - 需要全局安装方式 npm install -g live-server anywhere lite-server 
@@ -21,8 +32,17 @@
         --watch 监视改变
         --no-browser 不打开网页
     
-- 启动 webserver live-server ./bin/ --port=9666 live-server ./bin/ --port=9668 cd bin && anywhere 9666 无效
-- 运行 demo indexRollUp.html bundle 版案例 indexTSC.html tsc 版案例 indexTSCTest.html 缺少 spine-core.js 无法运行
+- 启动webserver
+  - lite-server ./bin/ --port=9666 
+  - live-server ./bin/ --port=9668 
+  - cd bin && anywhere 9666 无效
+
+- 运行 demo 
+  - indexRollUp.html bundle 版案例 
+  - indexTSC.html tsc 版案例  使用了es-module-shims.js 让浏览器也支持es6语法 直接import 而不用将散文件丢到html里
+  - indexTSCTest.html 缺少 spine-core.js 无法运行
+
+
 
 ## 源码结构
 
@@ -142,6 +162,8 @@ src/layaAir
 
 - [官方](https://ldc2.layabox.com/doc/?nav=zh-ts-0-3-0)
 - [typescript](https://www.tslang.cn/docs/home.html)
+- [demo](https://layaair2.ldc2.layabox.com/demo2/?language=en&category=2d&group=Sprite&name=DisplayImage)
+
 
 ### 1. 简介篇
 
@@ -220,7 +242,7 @@ src/layaAir
     - maxScrollX 只读 横向可滚动值
     - maxScrollY
     - wordWrap 自动换行 默认false
-
+    
     - 超出文本区域
     - overflow 性能从高到低 hidden visible scroll
     - scroll方式 可通过监听鼠标移到 通过scrollX Y来控制内容滑动 为什么自己不支持 不想和鼠标模块关联？
@@ -491,7 +513,7 @@ src/layaAir
     this.cMask.pos(120,50);  基于父精灵的左上角？
     //实现img显示对象的遮罩效果
     this.img.mask = this.cMask;
-```    
+```
 
 - ide中设置遮罩
     - 方式1：图片遮罩
@@ -577,7 +599,7 @@ Basics/Graphics/Line 拖入到view中
 - 高阶贝塞尔 曲线控制力度更大 可随意不同方向弯曲 
     - 核心思路不变：多点形成的多条轴 -> 每条轴都有一个动点随着时间百分比从一端到另一端 -> 若大于2条会降维度  
         -> 直到变成二次曲线为止 
-    ![](bezier4.gif) ![](bezier5.gif)
+        ![](bezier4.gif) ![](bezier5.gif)
 
 - laya中绘制曲线-采用2 3次贝塞尔曲线
     - laya.display.Graphics.drawCurves()
