@@ -11,6 +11,10 @@
 官方下载nvim-win64.msi C:\Program Files\Neovim\
 会将nvim自动加入环境路径
 
+### git bash中支持tree
+1. 从Tree for Windows中下载exe [download binaries](https://gnuwin32.sourceforge.net/packages/tree.htm)
+2. 解压得到bin/tree.exe 复制到 C:\Program Files\Git\usr\bin
+
 
 
 ## windows从0开始
