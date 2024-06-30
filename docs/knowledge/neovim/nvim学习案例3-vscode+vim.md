@@ -2,7 +2,7 @@
 # youtube上的一个案例
 vscode+vim
 [url](https://www.youtube.com/watch?v=uhk_YOmMwiI)
-[github](https://github.com/bryant-video/neovim-tutorial?tab=readme-ov-file)
+[github](https://github.com/bryant-video/neovim-tutorial?tab=readme-ov-file)  有vim相关的所有快捷键
 
 
 - operator
@@ -87,6 +87,12 @@ ff 当前行找f
     "vim.sneak": true,
     "vim.surround": true,
     "vim.statusBarColorControl": true,
+    "vim.statusBarColors.visual": "#b55d02",
+    "vim.statusBarColors.visualblock": "#a02236",
+    "vim.statusBarColors.visualline": "#9c195b",
+    "vim.statusBarColors.replace": "#6f1f45",
+    "vim.statusBarColors.insert": "#6d8400",
+    "vim.statusBarColors.normal": "#997575",
     "vim.useSystemClipboard": true,th
     "vim.commandLineModeKeyBindings": [
     ],
@@ -105,13 +111,13 @@ ff 当前行找f
     },
     "vim.insertModeKeyBindings": [
         {
-        "before": ["i", "i"],
+        "before": ["j", "k"],
         "after": ["<Esc>"]
         }
     ],
     "vim.visualModeKeyBindings": [
         {
-        "before": ["i", "i"],
+        "before": ["j", "k"],
         "after": ["<Esc>"]
         }
     ],

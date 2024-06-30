@@ -1,4 +1,5 @@
 # youtube上的一个案例
+nvim一分钟配置
 [url](https://www.youtube.com/watch?v=Wh2Uh3g5fOM)
 
 可以直接用作者的版本中的lazyvim 复制到local下 改名为nvim

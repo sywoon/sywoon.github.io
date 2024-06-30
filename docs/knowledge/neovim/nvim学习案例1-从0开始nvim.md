@@ -1,7 +1,9 @@
 
 # youtube上的一个案例
+从0开始nvim
 [url](https://www.youtube.com/watch?v=c5icE_ZxMzQ)
 [github](https://github.com/bryant-video/neovim-tutorial?tab=readme-ov-file)
+[telescope-fzf-native](https://github.com/nvim-telescope/telescope-fzf-native.nvim)
 
 
 ## 外部环境
@@ -259,10 +261,34 @@ ys+navigation+"
 cs+"+)
 ```
 
+### 各种报错
 
+1. 启动时fzf插件报错
+```
+E5113: Error while calling lua chunk: ...\start\telescope.nvim/lua/telescope/_extensions/init.lua:10: 'fzf' extension doesn't exist or isn't installed: ...k\packer\start\telescope-fzf-native.nvim/lua/fzf_lib.lua:11: cannot load module 'C:\Users\S\AppData\Local\nvim-data\site\pack\packer\start\telescope-fzf-native.nvim/lua/../build/libfzf.dll': 找不到指定的模块。                                                                                              
+查看代码错误：
+  fzf_lib.lua
+  local library_path = (function()
+  local dirname = string.sub(debug.getinfo(1).source, 2, #"/fzf_lib.lua" * -1)
+  if package.config:sub(1, 1) == "\\" then
+    return dirname .. "../build/libfzf.dll"
+  else
+    return dirname .. "../build/libfzf.so"
+  end
+end)()
+local native = ffi.load(library_path)
+  所以是这个插件没正确编译出dll
+```
+解决：telescope-fzf-native 需要手动编译
+```
+  官方说法 编译需求：
+  CMake, and the Microsoft C++ Build Tools on Windows
+  CMake, make, and GCC or Clang on Linux and MacOS
 
-
-
+  powershell：安装了vs2022
+  cd C:\Users\S\AppData\Local\nvim-data\site\pack\packer\start\telescope-fzf-native.nvim
+  cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build
+```
 
 
 
