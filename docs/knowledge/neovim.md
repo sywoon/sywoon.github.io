@@ -32,16 +32,17 @@ win11中 默认有terminal 和 wsl
 ```
   遇到的问题：
    商店里搜索ubuntu可以看到这个版本的标记是installed 但是命令行wsl启动不了
+   需要从商店进一次 创建账号
    点击install 会打开控制台继续安装 输入用户名和密码syw ' '
   解决：发现之前是在gitbash中启动的wsl 而非powershell
 ```
 3. wsl -l -v 查看安装后的系统
-4. 无论从power gitbash zsh都可以用wsl打开ubuntu；再通过exit退出
+4. 无论从power gitbash zsh都可以用wsl打开ubuntu；再通过exit退出(实际还在运行 running状态)
 ```
     切换到win目录
     cd /mnt/c/Users/S
     切换到ubuntu目录
-    cd ~
+    cd ~  == /home/s
 ```
 
 
@@ -73,6 +74,15 @@ Proportional Spacing（比例）比例间隔版本 每个字符占用的水平�
     Linux:  /usr/share/nvim/runtime
     wsl:  \\wsl.localhost\Ubuntu-24.04\usr\share\nvim\runtime
 ```
+- 我的电脑新增一个网络链接：
+  - 右键：新增一个网络位置：\\wsl.localhost\Ubuntu-24.04
+
+- 修改nvim别名
+```
+  nvim ~/.bashrc
+  alias vim='nvim'
+  alias vi='nvim'
+```
 
 
 
@@ -80,10 +90,43 @@ Proportional Spacing（比例）比例间隔版本 每个字符占用的水平�
 - 配置目录
 ```
     windows: %USERPROFILE%\AppData\Local\nvim\
-    wsl: ~/.config/nvim/  == /home/usr/.config/nvim/
+    wsl: ~/.config/nvim/  == /home/s/.config/nvim/
 ```
 
-- ~/.config/nvim/base.lua
+- 整体结构
+```
+  nvim
+    init.lua  主入口 加载其他模块 
+    lua
+      autocmds.lua
+      basic.lua  基础配置 对默认配置的重置
+      colorscheme.lua  主题皮肤 这里切换皮肤
+      keybindings.lua  快捷键
+      lsp  编程语言和语法提示
+        cmp.lua 语法自动补全配置
+        config  各种语言服务器单独的配置文件
+          bash.lua emmet.lua html.lua json.lua
+          lua.lua markdown.lua pyright.lua rust.lua ts.lua
+        formatter.lua 格式化代码
+        null-ls.lua
+        setup.lua  内置lsp的配置
+        ui.lua  内置lsp功能增量和ui美化
+      plugin-config  第三方插件的配置 
+        bufferline.lua comment.lua dashboard.lua gitsigns.lua
+        indent-blankline.lua lualine.lua nvim-autopairs.lua
+        nvim-tree.lua nvim-treesitter.lua project.lua
+        surround.lua telescope.lua toggleterm.lua
+        vimspector.lua which-key.lua
+      plugins.lua  插件管理
+      utils  常见问题修改 输入法切换 windows的特殊配置等
+        fix-yank.lua
+        global.lua
+        im-select.lua
+        
+
+```
+
+- ~/.config/nvim/lua/basic.lua
 ```
     -- vim.g.{name} 全局变量（global variables）
     -- vim.o.{name} 全局选项（global options）
@@ -308,6 +351,73 @@ Proportional Spacing（比例）比例间隔版本 每个字符占用的水平�
 
 
 
+## 配置模板
+
+
+### 根据官网安装LazyVim(非插件)
+[lazyvim doc](https://www.lazyvim.org)
+- 安装
+```
+  git clone https://github.com/LazyVim/starter ~/.config/nvim
+```
+- 配置：默认已经有一堆的插件了 只需要启动一次nvim就会自动安装
+- 默认插件安装的路径
+```
+  \home\s\.config\nvim\ 原始配置目录
+  \home\s\.local\share\nvim\  插件安装目录
+      lazy mason  
+   == Windows: C:\\Users\\{username}\\AppData\\Local\\nvim-data
+  \home\s\.cache\nvim\luac\  插件的lua编译文件？
+```
+
+- 启动报错1：
+```
+Error detected while processing BufReadPost Autocommands for "*":
+Error executing lua callback: /usr/share/nvim/runtime/filetype.lua:35: Error executing lua: /usr/share/nvim/runtime/file
+type.lua:36: BufReadPost Autocommands for "*"..FileType Autocommands for "*"..function <SNR>1_LoadFTPlugin[20]..script /
+usr/share/nvim/runtime/ftplugin/lua.lua: Vim(runtime):E5113: Error while calling lua chunk: /usr/share/nvim/runtime/lua/
+vim/treesitter/language.lua:107: no parser for 'lua' language, see :help treesitter-parsers
+stack traceback:
+        [C]: in function 'error'
+        /usr/share/nvim/runtime/lua/vim/treesitter/language.lua:107: in function 'add'
+        /usr/share/nvim/runtime/lua/vim/treesitter/languagetree.lua:111: in function 'new'
+        /usr/share/nvim/runtime/lua/vim/treesitter.lua:41: in function '_create_parser'
+        /usr/share/nvim/runtime/lua/vim/treesitter.lua:108: in function 'get_parser'
+        /usr/share/nvim/runtime/lua/vim/treesitter.lua:416: in function 'start'
+        /usr/share/nvim/runtime/ftplugin/lua.lua:2: in main chunk
+        [C]: in function 'nvim_cmd'
+        /usr/share/nvim/runtime/filetype.lua:36: in function </usr/share/nvim/runtime/filetype.lua:35>
+        [C]: in function 'nvim_buf_call'
+        /usr/share/nvim/runtime/filetype.lua:35: in function </usr/share/nvim/runtime/filetype.lua:10>
+stack traceback:
+        [C]: in function 'nvim_cmd'
+        /usr/share/nvim/runtime/filetype.lua:36: in function </usr/share/nvim/runtime/filetype.lua:35>
+        [C]: in function 'nvim_buf_call'
+        /usr/share/nvim/runtime/filetype.lua:35: in function </usr/share/nvim/runtime/filetype.lua:10>
+stack traceback:
+        [C]: in function 'nvim_buf_call'
+        /usr/share/nvim/runtime/filetype.lua:35: in function </usr/share/nvim/runtime/filetype.lua:10>
+```
+- 分析：
+```
+  回车后 可以看到额外的信息：
+  No C compiler found! "cc", "gcc", "clang", "cl", "zig" are not executable
+
+  关键路径 \\wsl.localhost\Ubuntu-24.04\usr\share\nvim\runtime\lua\vim\treesitter\language.lua
+    error("no parser for '" .. lang .. "' language, see :help treesitter-parsers")
+  对应上面的：language.lua:107: no parser for 'lua' language, see :help treesitter-parsers
+```
+- 原因：ubuntu环境缺少c编译器
+```
+  sudo apt update
+  sudo apt install clang
+  clang --version
+  sudo apt install build-essential  安装其他依赖
+```
+
+
+
+
 ## 插件
 [vim-plug](https://github.com/junegunn/vim-plug)
 [查询流行的插件](https://github.com/rockerBOO/awesome-neovim)
@@ -315,23 +425,38 @@ Proportional Spacing（比例）比例间隔版本 每个字符占用的水平�
 最新[lazy.nvim插件管理](https://github.com/folke/lazy.nvim) pckr.nvim 
 [LazyVim懒人配置 不是同一个东西](https://github.com/LazyVim/LazyVim)
 
+- 插件所在目录
+```
+  :echo $VIMRUNTIME
+  C:\Program Files\Neovim\share\nvim\runtime\
+```
+
+
 
 ### lazy.nvim
 init.lua中添加
 ```lua
+-- 1. 准备lazy.nvim模块（存在性检测）
+-- stdpath("data")
+-- macOS/Linux: ~/.local/share/nvim
+-- Windows: ~/AppData/Local/nvim-data
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
-  vim.fn.system({
-    "git",
-    "clone",
-    "--filter=blob:none",
-    "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable", -- latest stable release
-    lazypath,
-  })
+	vim.fn.system({
+		"git",
+		"clone",
+		"--filter=blob:none",
+		"https://github.com/folke/lazy.nvim.git",
+		"--branch=stable", -- latest stable release
+		lazypath,
+	})
 end
+
+-- 2. 将 lazypath 设置为运行时路径
+-- rtp（runtime path）
+-- nvim进行路径搜索的时候，除已有的路径，还会从prepend的路径中查找
+-- 否则，下面 require("lazy") 是找不到的
 vim.opt.rtp:prepend(lazypath)
- 
 require("lazy").setup()
 ```
 - 分析
@@ -351,7 +476,92 @@ require("lazy").setup()
 ```
     error delected while processing BufReadPost Autocommands for "*":
     error executing lua callback:/usr/share/nvim/runtime/filetype.lua:35:
+    解决：安装clang
 ```
+
+
+#### lazy插件
+```
+require("lazy").setup(
+    { "catppuccin/nvim", name = "catppuccin", priority = 1000 }
+)
+vim.cmd.colorscheme("catppuccin")   --永久生效
+第一次安装时有报错 重启后又正常了
+
+:colorscheme Tab键  查看其他插件
+```
+
+- 插件的另一种安装方式
+```
+  init.lua
+  require("basic")
+  require("keybindings")
+  require("lazynvim-init")  需要在全局配置之后
+```
+-- lazynvim-init.lua
+```
+  以目录的方式加载插件
+  require("lazy").setup("plugins")
+  只要创建lua/plugins
+  每个插件都以独立的文件存在 方便扩展
+  第一次会报错 插件安装完后 下次就正常了！
+```
+- plugin-lualine.lua
+```
+-- 文件状态展示
+return {  
+    {
+        'nvim-lualine/lualine.nvim',
+        config = function()
+            require('lualine').setup()
+        end
+    }
+}
+```
+- plugin-nvim-tree
+```
+return {
+    {
+        "nvim-tree/nvim-tree.lua",  --插件在github上的short url
+        version = "*",  --表明使用最新版本  以后仓库有更新，则拉去最新插件代码
+        dependencies = {"nvim-tree/nvim-web-devicons"},  --依赖另一个插件
+        config = function()  --插件启动加载以后，则会执行该config的代码
+            require("nvim-tree").setup {}
+            --local status, nvim_tree = pcall(require, "nvim-tree")
+            --if not status then
+            --    vim.notify("没有找到 nvim-tree")
+            --    return
+            --end
+        end
+    }
+}
+
+:NvimTreeOpen
+```
+
+- plugin-theme-catppuccin 主题
+```
+return {  
+    {
+        'catppuccin/nvim',
+        config = function()
+            require('catppuccin').setup()
+        end
+    }
+}
+需要在另个文件中启用 比如lua/theme.lua
+vim.cmd.colorscheme("catppuccin")
+另一种启用方式
+local colorscheme = "tokyonight"
+local status_ok, _ = pcall(vim.cmd, "colorscheme " .. colorscheme)
+if not status_ok then
+  vim.notify("colorscheme " .. colorscheme .. " 没有找到！")
+  return
+end
+```
+
+
+
 
 
 
