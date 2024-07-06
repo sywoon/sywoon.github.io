@@ -254,10 +254,12 @@ gcc注释  自动识别不同语言
 
 
 ## 第7集：LSP 配置
+[video](https://www.youtube.com/watch?v=tXyg2DFkqIQ&list=PLlYlfdIF0BKcSMqYr2dxsQNTCLJFQ_hMI&index=8)
+
 不同语言有不同的lsp 查看定义 格式化等
 - .nvim.lua
 
-- pytho lsp
+- python lsp
 ```
   python3 -m venv .env
   pip install pyright
@@ -268,16 +270,116 @@ gcc注释  自动识别不同语言
   htop* 查看启用的lsp
 ```
 
-https://www.youtube.com/watch?v=tXyg2DFkqIQ&list=PLlYlfdIF0BKcSMqYr2dxsQNTCLJFQ_hMI&index=8
-12分钟
+- nvim-lspconfig
+每种语言的lsp配置  不再需要每个项目中手动写.nvim.lua文件
+
+- mason
+管理lsp dap的安装
 
 
 
+## 第8集：美化 LSP
+
+- neoconf.nvim
+用json配置lsp
+加载vscode设置
+默认配置文件生成位置:
+~/.config/nvim/.neoconfig.json
+
+
+- neodev.nvim
+lsp中正确识别全局对象-语法提示
+
+- fidget.nvim
+lsp安装进度显示
+
+- lspsaga.nvm
+美化 替换原有的一些lsp快捷键功能
 
 
 
+## 第9集：自动补全
+
+- nvim-cmp
 
 
+## 第10集：DAP 配置
+debug adapter protocol
+
+- nvim.dap
+支持.nvim.lua方式配置  或则 引入工程下的.vscode/launch.json
+:DapTerminalte
+
+
+### python debug
+pip install debugpy
+
+- .nvim.lua
+```
+  -- 1. Neovim run/listen adapters
+  -- 2. Neovim tells adapter who run the my program(configurations)
+  -- 3. adapter run my program by the configurations
+  -- 4. Neovim <=> adapter
+  local dap = require "dap"
+  dap.adapters.debugpy = {
+    type = "executable",
+    command = "python",
+    args = {'-m', 'debugpy.adapter'}
+  }
+  dap.configurations.python = {
+    {
+      type = "debugpy",
+      request = "launch",
+      name = "Debug Files",
+      program = "${file}",
+    }
+  }
+```
+
+- nvim-dap-ui
+显示调试界面 堆栈
+
+- nvim-dap-virtual-text
+断点到某行 会显示变量值
+
+- telescope-dap.nvim
+替换f5的功能
+
+- mason-vim-dap
+mason本身只安装 没任何配置
+这个插件提供 默认各种语言dap的配置
+
+- nvim-dap-python
+默认配置python的debug
+
+
+## 第11集：Null_LS 配置
+
+- null-ls.nvim
+格式化代码 对某些lsp没支持的语言
+用第三方工具 通过lsp来让neovim支持格式化
+Neovim <=lsp=> null-ls <=> black-python,pylint,elint...
+所以维护代价比较大  所以作者不再维护了
+
+- 代替方案
+guard.nvim formatter.nvim elm-language-server nvim-lint ale
+
+
+
+##　第12集：启动速度优化
+Lazy查看Profile界面
+Ctrl-s根据启动时间排序
+
+- 优化
+通过lazy的event功能 才启动插件
+
+
+
+##　番外1：更灵活的LSP参数
+修改lsp的启动参数
+nvim-lsp-config代替了原始配置
+修改lsp.lua 抛弃原来for方式 用一个setting配置所有语言
+为了让cmd和setting平级配置 
 
 
 
