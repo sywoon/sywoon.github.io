@@ -65,6 +65,17 @@
 	C:\Users\admin\AppData\Local\Microsoft\WindowsApps 奇怪的是这里的exe为0k 但是能用
 ```
 
+5. 删除文件夹
+```
+powershell:
+  rd /s /q .
+bash:
+  rm -rf *
+```
+
+
+
+
 
 
 

@@ -5,6 +5,8 @@
 [参考1](https://zhuanlan.zhihu.com/p/464902429)
 
 [neovim](https://neovim.io/)
+[样板1:SimpleNvim](https://github.com/askfiy/SimpleNvim)
+
 
 
 ## 安装
