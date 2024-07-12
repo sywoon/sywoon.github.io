@@ -147,8 +147,9 @@ mkdir lua/plugins 会扫描这个文件夹内的文件
 local theme_names = {
     monokai = { "tanvirtin/monokai.nvim", "monokai"},
     tokyonight = { "folke/tokyonight.nvim", "tokyonight"},
+    tokyonight_moon = { "folke/tokyonight.nvim", "tokyonight-moon"},
 }
-local theme_name = "monokai"
+local theme_name = "tokyonight_moon"
 
 return {
     -- the colorscheme should be available when starting Neovim
@@ -356,7 +357,7 @@ return {
         -- Customized on_attach function
         -- See `:help vim.diagnostic.*` for documentation on any of the below functions
         local opts = { noremap = true, silent = true }
-        vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
+        --vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
         vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
         vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
         vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)

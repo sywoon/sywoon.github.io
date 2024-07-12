@@ -17,6 +17,8 @@
 
 2. Listary 类似everything
 
+3. shexview 查看shell扩展 右键菜单
+https://www.nirsoft.net/ 还有很多软件：进程查看 网络等
 
 
 

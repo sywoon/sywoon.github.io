@@ -223,6 +223,8 @@ nvim_tree.setup({
 
 ### bufferline
 管理buffer像ide的多个tab一样
+通过配置offsets 让tab行不覆盖到nvimtree上面
+
 
 - buffer的原始操作
 ```

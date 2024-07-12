@@ -7,15 +7,22 @@
 [neovim](https://neovim.io/)
 [样板1:SimpleNvim](https://github.com/askfiy/SimpleNvim)
 
+注意：不能和vim9混用 打开过vim后 再回到nvim 显示乱码 操作诡异
+删除~/nvimlog .bash_history .txt  按时间排序可以看到 -没用 重新打开pwoershell即可
 
 
 ## 安装
 官方下载nvim-win64.msi C:\Program Files\Neovim\
 会将nvim自动加入环境路径
+git config --global core.editor "nvim"
+
 
 ### git bash中支持tree
 1. 从Tree for Windows中下载exe [download binaries](https://gnuwin32.sourceforge.net/packages/tree.htm)
 2. 解压得到bin/tree.exe 复制到 C:\Program Files\Git\usr\bin
+
+- tmux是否也可以从这里下载？
+gnuwin32中没有tmux 可以安装Cygwin或Msys2
 
 
 
@@ -124,12 +131,10 @@ Proportional Spacing（比例）比例间隔版本 每个字符占用的水平�
         fix-yank.lua
         global.lua
         im-select.lua
-        
-
 ```
 
 - ~/.config/nvim/lua/basic.lua
-```
+```lua
     -- vim.g.{name} 全局变量（global variables）
     -- vim.o.{name} 全局选项（global options）
     -- vim.b.{name} 缓冲区变量
@@ -266,7 +271,7 @@ Proportional Spacing（比例）比例间隔版本 每个字符占用的水平�
     * options 大部分会设置为 { noremap = true, silent = true }
 
 - lua/keybindings.lua
-```
+```lua
     -- <leader> key
     vim.g.mapleader = " "
     vim.g.maplocalleader = " "
@@ -345,6 +350,8 @@ Proportional Spacing（比例）比例间隔版本 每个字符占用的水平�
     -- insert模式 调到行首尾
     map("i", "<C-h>", "<ESC>I", opt)
     map("i", "<C-l>", "<ESC>A", opt)
+    
+    map("i", "jk", "<ESC>", opt)
 ```
 
 - 技巧1：gd跳转到定义 相当于vs中的f12
@@ -483,7 +490,7 @@ require("lazy").setup()
 
 
 #### lazy插件
-```
+```lua
 require("lazy").setup(
     { "catppuccin/nvim", name = "catppuccin", priority = 1000 }
 )
@@ -509,7 +516,7 @@ vim.cmd.colorscheme("catppuccin")   --永久生效
   第一次会报错 插件安装完后 下次就正常了！
 ```
 - plugin-lualine.lua
-```
+```lua
 -- 文件状态展示
 return {  
     {
@@ -521,7 +528,7 @@ return {
 }
 ```
 - plugin-nvim-tree
-```
+```lua
 return {
     {
         "nvim-tree/nvim-tree.lua",  --插件在github上的short url
@@ -537,12 +544,12 @@ return {
         end
     }
 }
-
+map("n", "<leader>e", ":NvimTreeToggle<cr>", opt)
 :NvimTreeOpen
 ```
 
 - plugin-theme-catppuccin 主题
-```
+```lua
 return {  
     {
         'catppuccin/nvim',
