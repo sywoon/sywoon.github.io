@@ -118,7 +118,42 @@ vscode左边 多出一个远程控制管理器  默认包含了已经安装的 u
 ```
 
 
+## lazygit
+```
+sudo add-apt-repository ppa:lazygit-team/release
+sudo apt-get update
+sudo apt-get install lazygit
+```
 
+
+## 安装nodejs
+[参考](https://learn.microsoft.com/zh-tw/windows/dev-environment/javascript/nodejs-on-wsl)
+```
+sudo apt update && sudo apt upgrade
+sudo apt-get install curl
+curl -V
+
+安装nvm 管理nodejs版本
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
+nvm ls 查看已安装版本
+nvm install --lts安装稳定版
+or
+nvim install node 安装最新版
+node --version
+```
+- nvm安装失败
+```
+1 wsl中安装进度无反应：windows中开启open vpn代理
+2. 报错
+export NVM_DIR="$HOME/.nvm"
+会自动到.zshrc末尾添加
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+重启terminal  需要关闭整个 纯粹退出wsl还不够 
+```
+nvm --version
+安装目录：/home/syw/.nvm/versions/node/v20.15.1/bin/node
 
 
 
