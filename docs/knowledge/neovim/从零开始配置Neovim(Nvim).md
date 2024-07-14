@@ -1,4 +1,6 @@
 
+# 🔙[nvim root](/README?id=🔸neovim)
+# 🔙​[nvim up](/docs/knowledge/neovim)
 
 # 从零开始配置 Neovim(Nvim)
 [web](https://www.cnblogs.com/RioTian/p/17993485)
@@ -18,7 +20,7 @@ brew install neovim
 
 ## 选项配置 lua/options.lua
 采用系统粘贴板 支持鼠标操控 tab和空格的换算 智能搜索
-```
+```lua
 -- Hint: use `:h <option>` to figure out the meaning if needed
 vim.opt.clipboard = 'unnamedplus' -- use system clipboard
 vim.opt.completeopt = { 'menu', 'menuone', 'noselect' }
@@ -48,7 +50,7 @@ vim.opt.smartcase = true -- but make it case sensitive if an uppercase is entere
 
 
 ## 按键配置 lua/keymaps.lua
-```
+```lua
 <C-h/j/k/l> 快速在多个窗口之间移动光标
 ctrl+方向键 调整窗口大小
 选择模式下 可以用tab或者shift-tab改变缩进
@@ -99,7 +101,7 @@ vim.keymap.set('i', 'jk', '<ESC>', opts)
 [doc](https://lazy.folke.io/installation)
 
 - lua/lazy_nvim.lua
-```
+```lua
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then

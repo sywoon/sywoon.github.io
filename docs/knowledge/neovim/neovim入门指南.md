@@ -1,3 +1,5 @@
+# 🔙[nvim root](/README?id=🔸neovim)
+# 🔙​[nvim up](/docs/knowledge/neovim)
 
 # neovim入门指南
 [web](https://youngxhui.top/)
@@ -113,7 +115,7 @@ vim.o.clipboard = "unnamedplus"
 
 ### lazy.nvim
 lua/lazy_nvim.lua
-```
+```lua
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({

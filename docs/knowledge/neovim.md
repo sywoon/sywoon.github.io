@@ -2,13 +2,24 @@
 
 
 # neovim
-[参考1](https://zhuanlan.zhihu.com/p/464902429)
-
 [neovim](https://neovim.io/)
+[nerdfonts](https://www.nerdfonts.com/font-downloads)
+[nerd字库图标](https://www.nerdfonts.com/cheat-sheet)
+[所有颜色插件](https://github.com/topics/neovim-colorscheme)
+
 [样板1:SimpleNvim](https://github.com/askfiy/SimpleNvim)
+[参考1](https://zhuanlan.zhihu.com/p/464902429)
+[参考2](https://blog.csdn.net/qq_55125921/article/details/127177442)
+
 
 注意：不能和vim9混用 打开过vim后 再回到nvim 显示乱码 操作诡异
 删除~/nvimlog .bash_history .txt  按时间排序可以看到 -没用 重新打开pwoershell即可
+
+
+## [从零开始配置Neovim(Nvim)](/docs/knowledge/neovim/从零开始配置Neovim(Nvim).md)
+## [NeoVim从平凡到非凡](/docs/knowledge/neovim/NeoVim从平凡到非凡.md)
+## [Neovim配置实战:从0到1打造自己的IDE](/docs/knowledge/neovim/Neovim配置实战-从0到1打造自己的IDE.md)
+## [neovim入门指南](/docs/knowledge/neovim/neovim入门指南.md)
 
 
 ## 安装
@@ -17,12 +28,123 @@
 git config --global core.editor "nvim"
 
 
+## git bash
+安装git for window 
+[64-bit Git for Windows Setup](https://git-scm.com/download/win)
+
+## git bash添加到powershell路径中
+实际terminal中可以配置git bash入口
+```
+echo $PROFILE
+C:\Users\admin\Documents\WindowsPowerShell
+手动创建文件：
+Microsoft.PowerShell_profile.ps1
+    # 添加 Git Bash 路径到系统路径
+    $gitBashPath = "C:\Program Files\Git\bin"
+    if (-Not ($env:Path -split ';' | ForEach-Object {$_ -eq $gitBashPath})) {
+        $env:Path += ";$gitBashPath"
+    }
+
+    # 定义一个命令以便直接运行 Git Bash
+    function Start-GitBash {
+        & "$gitBashPath\bash.exe" -i -l
+    }
+
+    # 可选：创建一个别名
+    Set-Alias bash Start-GitBash
+```
+
+### terminal中新增git bash
+  - 需要一个 cygwin 的环境，为了方便起见，这里使用 git bash
+  - 安装时需要给 windows terminal 添加 git bash 启动配置，git 安装时会有自动添加的勾选，如果错过了需要新建配置，关键配置如下：
+      - 命令行: C:/Program Files/Git/bin/bash.exe -i -l  
+        - 启动一个新的 Bash shell 实例，并同时处于交互模式和登录模式
+        - -i 执行命令并立即获得反馈  windows中 是否添加 貌似没区别 默认就是交互模式
+        - -l 登录模式 Bash 会读取并执行特定的初始化文件 
+        - 例如 /etc/profile、~/.bash_profile、~/.bash_login 和 ~/.profile。
+      - 启动目录: %USERPROFILE%  == C:\Users\admin
+
+  - 配置方法
+    - terminal：设置：新增一个profile
+    - Name: Git Bash
+    - command line:C:/Program Files/Git/bin/bash.exe -i -l  
+    - sharting directory: %USERPROFILE%
+    - icon:C:\Program Files\Git\mingw64\share\git\git-for-windows.ico
+    - 后面就可以通过新分页的创建箭头 选择git bash图标
+
+
+
 ### git bash中支持tree
 1. 从Tree for Windows中下载exe [download binaries](https://gnuwin32.sourceforge.net/packages/tree.htm)
 2. 解压得到bin/tree.exe 复制到 C:\Program Files\Git\usr\bin
 
 - tmux是否也可以从这里下载？
 gnuwin32中没有tmux 可以安装Cygwin或Msys2
+
+
+### git bash支持zsh 和 oh-my-zsh
+[参考](https://juejin.cn/post/7229507721795993661)
+[参考2](https://www.haoyep.com/posts/zsh-config-oh-my-zsh/)
+
+- 下载 Zsh（已随文件附带），https://packages.msys2.org  
+  [zsh-5.9-2-x86_64.pkg.tar](https://packages.msys2.org/package/zsh?repo=msys&variant=x86_64)
+  
+  - 注意：pkg.tar需要使用[7z22.01-zstd](https://github.com/mcmilk/7-Zip-zstd/releases)
+  - 右键菜单 7z提取文件：得到pkg  再提取一次即可！
+  - 得到usr/bin/zsh.exe
+- 覆盖入 Git 安装路径(是里面的内容复制进去 不是zsh文件夹)，重启git bash输入zsh命令查看是否安装; 输入0 得到~/.zshrc  最初的默认版本
+
+- 或者 手动创建$Home目录下 .bashrc键入(-l方式启动需要)已下内容：
+  ```shell
+  if [ -t 1 ]; then
+    exec zsh
+  fi
+  ```
+  这样输入bash时 自动跳转启动zsh
+
+**echo $HOME 查看家目录**
+- 手动安装 oh-my-zsh（已随文件附带，并且附带插件），将.oh-my-zsh和.zshrc放置Home目录
+- 自动安装：sh -c "$(curl -fsSL https://gitee.com/pocmon/ohmyzsh/raw/master/tools/install.sh)"   这是国内的镜像点 可无需代理安装
+- 国外原始地址：
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+- zshrc 文件中 plugins 变量改为：
+  ```shell
+    plugins=(
+    	git
+    	zsh-autosuggestions
+    	zsh-syntax-highlighting
+    	z
+    )
+  ```
+
+- powerlevel10k
+- 插件bug：启动zsh会显示~ ←[?1h←[?1h 而且输入任何字符都会一直出现; 
+- 最新的gitbash没这个bug所以无需这么处理了
+- 解决：使用tag版本zsh-autosuggestions-0.6.4.zip [github](https://github.com/zsh-users/zsh-autosuggestions/tree/master)  替换：C:\Users\admin\.oh-my-zsh\custom\plugins\zsh-autosuggestions   --没用
+- 修改主题：通过设置为random 找到部分正常主题：steeef  kolo jnrowe 
+- 添加新主题：没有乱码！！！
+```
+	git clone --depth=1 https://gitee.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
+	ZSH_THEME="powerlevel10k/powerlevel10k"
+	第一次启动会有很多配置选择 更加自己喜欢的即可
+	后续修改：.p10k.zsh
+```
+
+
+## winget
+
+- 软件安装使用的winget，如果没有建议安装，因为部分命令行工具安装依赖这个包管理器。
+- [winget](https://github.com/microsoft/winget-cli/releases)
+```
+	- 安装后命令行中还是不能用 手动添加路径：
+
+	C:\Program Files\WindowsApps\Microsoft.DesktopAppInstaller_1.24.1551.0_x64__8wekyb3d8bbwe
+	注意：不是appstore的路径 这里的exe大小为0 而且还有python python3
+	C:\Users\admin\AppData\Local\Microsoft\WindowsApps 奇怪的是这里的exe为0k 但是能用
+```
+
+
 
 
 
@@ -92,6 +214,90 @@ Proportional Spacing（比例）比例间隔版本 每个字符占用的水平�
   alias vim='nvim'
   alias vi='nvim'
 ```
+
+
+### windows安装Neovim发行版
+- 使用winget搜索安装包:
+  - ```powershell
+    winget search neovim
+    ```
+  
+- 安装发行版:
+  - ```powershell
+    winget install Neovim.Neovim
+    实际下载来源：https://github.com/neovim/neovim/releases/download/v0.10.0/nvim-win64.msi
+    手动下载安装 会自动加入环境路径：C:\Program Files\Neovim\bin\nvim.exe
+    ```
+
+- 检查安装是否成功：
+  - ```shell
+    nvim -v
+    ```
+
+
+## LuaJIT
+- 同样使用winget安装，本机使用的是 2.1版本； 注意window11中安装无效
+```
+	winget search luajit
+	winget install LuaJIT
+	 https://github.com/DevelopersCommunity/cmake-luajit/releases/download/v2.1.19757/LuaJIT-2.1.19757-win64.msi
+	 C:\Users\admin\AppData\Local\Programs\LuaJIT\
+	 手动安装 也会自动加入环境路径
+	 luajit -v
+	LuaJIT 2.1.1707061634 -- Copyright (C) 2005-2023 Mike Pall. https://luajit.org/
+	还是基于lua5.1
+```
+
+
+## tmux
+```
+	https://github.com/trzsz/trzsz-go/releases/download/v1.1.7/trzsz_1.1.7_windows_x86_64.zip
+```
+
+
+## C编译器
+### cmake和make  
+windows中安装cmake即可
+- telescope-fzf-native 需要手动编译
+- nvim-treesitter 需要编译动态库使用
+
+### clang
+后续安装fzf需要
+- 见 windows 常见问题，主要原因是 nvim-treesitter 使用 gcc 编译的 .so 动态库无法在 windows 上正确运行
+
+
+### ripgrep
+- 模糊搜索依赖，同样建议使用 winget 安装(github官网版本太多，很烦)
+```
+	winget install BurntSushi.ripgrep.MSVC
+	https://github.com/BurntSushi/ripgrep/releases/download/14.1.0/ripgrep-14.1.0-x86_64-pc-windows-msvc.zip
+	解压到某个路径 加入环境中
+```
+
+
+### NerdFont
+- 只是为了UI显示好看需要，nvim中左边的tree图标 需要这个字体才正常显示
+```
+	https://www.nerdfonts.com/font-downloads
+	有很多字体 选择SauceCodePro
+	SauceCodeProNerdFontPropo-Regular.ttf
+	手动安装后 terminal设置中 修改gitbash中的字体 重启vi
+	后面换了个字体：上面的比较宽
+	CousineNerdFont-Regular.ttf
+```
+
+## 安装配置
+https://github.com/mendelyv/nvim
+
+**配置（nvim）和插件（nvim-data）已随文件附带，两个文件夹均放置于 AppData/Local**
+zshrc 配置nvim别名（可选）
+``` shell
+if type nvim > /dev/null 2>1&; then
+    vi=‘nvim'
+fi
+```
+
+
 
 
 

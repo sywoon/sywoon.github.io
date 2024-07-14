@@ -1,3 +1,7 @@
+# 🔙[nvim root](/README?id=🔸neovim)
+# 🔙​[nvim up](/docs/knowledge/neovim)
+
+
 # NeoVim 从平凡到非凡
 
 [视频0](https://www.youtube.com/watch?v=Qp71mD7Eex0&list=PLlYlfdIF0BKcSMqYr2dxsQNTCLJFQ_hMI)
@@ -162,6 +166,27 @@ windows需要安装cmake clang   上面的命令没能自动执行
 后来手动用powershell执行了命令 分两段执行 得到build/release/libfzf.dll
 ```
 
+- 快捷键
+```lua
+pluginKeys.telescopeList = {
+  i = {   --在输入状态时的快捷键
+    -- 上下移动
+    ["<C-j>"] = "move_selection_next",
+    ["<C-k>"] = "move_selection_previous",
+    ["<Down>"] = "move_selection_next",
+    ["<Up>"] = "move_selection_previous",
+    -- 历史记录
+    ["<C-n>"] = "cycle_history_next",
+    ["<C-p>"] = "cycle_history_prev",
+    -- 关闭窗口
+    ["<C-c>"] = "close",
+    -- 预览窗口上下滚动
+    ["<C-u>"] = "preview_scrolling_up",
+    ["<C-d>"] = "preview_scrolling_down",
+  },
+}
+```
+
 - 环境需求：
   brew install ripgrep fzf-有何用 和插件什么区别？
 - 作者的配置额外错误
@@ -169,6 +194,9 @@ windows需要安装cmake clang   上面的命令没能自动执行
 
 ```fzf
 Failed to run `config` for telescope.nvim                                                                                                                                                                               ...a/lazy/telescope.nvim/lua/telescope/_extensions/init.lua:10: 'fzf' extension doesn't exist or isn't installed: ...nvim-data/lazy/telescope-fzf-native.nvim/lua/fzf_lib.lua:11: cannot load module 'C:/Users/admin/AppData/Local/nvim-data/lazy/telescope-fzf-native.nvim/lua/../build/libfzf.dll': 找不到指定的模块。^M 
+解决：
+复制C:\Users\S\AppData\Local\nvim-data\lazy\telescope-fzf-native.nvim\build\Release\libfzf.dll
+到上层目录
 ```
 
 ```blankline
@@ -243,6 +271,8 @@ vif dif 对整个函数块操作 需要配置快捷键
   gcc注释  自动识别不同语言
 - s1n7ax/nvim-window-picker
   眺不同窗口  感觉不如`<c-hjkl>`实用
+-- catppuccin/nvim 主题
+  { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
 
 ## 第7集：LSP 配置
 

@@ -5,6 +5,44 @@
 ![](../lua.gif)  
 这里是相对路径，若在根目录下，可直接使用doc/lua.png
 
+
+## 配置
+```
+git config --global user.name sywoon
+git config --global user.email sywoon@163.com
+git config --global color.ui auto
+
+git config --global core.editor nvim
+git config --global core.ignorecase false
+
+:: false: pull push do nothing  in only windows
+:: input: push change crlf to lf   pull do nothing  in linux
+:: true: pull push both change   in window and linux
+git config --global core.autocrlf false
+
+git config --global sendpack.sideband false
+git config --global push.default simple
+
+git config --global diff.tool bc4
+git config --global difftool.bc4.cmd "\"c:/program files/beyond compare/bcomp.exe\" \"$LOCAL\" \"$REMOTE\""
+
+git config --global merge.tool bc4
+git config --global mergetool.bc4.cmd "\"c:/program files/beyond compare/bcomp.exe\" \"$LOCAL\" \"$REMOTE\" \"$BASE\" \"$MERGED\""
+git config --global mergetool.bc4.trustExitCode true
+
+git config --global branch.master.rebase true
+git config --global branch.release.rebase true
+
+git config --global alias.co "checkout"
+git config --global alias.br "branch"
+git config --global alias.ci "commit"
+git config --global alias.st "status"
+git config --global alias.dt "difftool"
+git config --global alias.logs "log --stat"
+git config --global alias.logo "log --oneline"
+git config --global alias.cp "cherry-pick"
+```
+
 ## 本地新增分支 推送给远端：
 ```
 git br -av 查看本地分支
