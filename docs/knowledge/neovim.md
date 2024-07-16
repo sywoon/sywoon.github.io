@@ -776,11 +776,45 @@ end
 ```
 
 
+## copilot支持
 
+```
+自动安装：
+pulgins/copolit.lua
+  return {
+    "github/copilot.vim"
+  }
 
+手动安装：
+window powershell:
+  git clone https://github.com/github/copilot.vim.git 
+  $HOME/AppData/Local/nvim/pack/github/start/copilot.vim
+```
 
+- nodejs升级
+```
+  :Copilot setup  要求nodejs18以上
+  nvm ls
+  提示node版本太旧了 本地为14.21.3 为了跑laya的环境
+  nvm install --lts  升级到20.15.1
+  nvm use 20.15.1
+  重新验证上面的命令
+  第一会给一个code 回车后打开github网页 输入code即可
+    github.com/login/device
+  test.lua中验证 
+  可以正常使用！！！
+```
 
+- 问题1： tab键和nvim-cmp冲突
+  解决：修改pluginKeys.nvimCmp 注释tab部分
 
+- 问题2：由于copilot的工程在nvim/pack/github/start目录下 子git工程
+```
+  git submodule add https://github.com/github/copilot.vim.git nvim2/pack/github/start/copilot.vim
+  git rm --cached nvim2/pack/github/start/copilot.vim
+  .gitignore中忽略这个目录：
+     nvim2/pack/github/start/
+```
 
 
 

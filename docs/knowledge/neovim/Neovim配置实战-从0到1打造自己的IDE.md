@@ -1358,11 +1358,12 @@ keybindings.lua末尾
   -- treesitter
   -- 格式化文件
   map("n", "<A-f>", "gg=G", opt)
+  map("n", "<leader>f", "gg=G", opt)
 ```
 
 
 ### 代码折叠模块
-使用了 zc 组合键来折叠 {} 中的内容，还可以使用 zo 组合键来打开对应的折叠
+使用了 *zc* 组合键来折叠 {} 中的内容，还可以使用 *zo* 组合键来打开对应的折叠
 没看到快捷键的设置？
 重新打开后 会恢复最初的样子 不会缓存
 nvim-treesitter.lua最后面添加  是否考虑放入basic中？-后来决定移入
@@ -1619,11 +1620,301 @@ formatting_sync 函数不存在  所以保存lua代码会报错
 
 
 
+### 基于LSP的代码补全与自定义代码段
+
+
+#### 主要概念
+1. 补全引擎： 提供代码补全核心功能的插件  [nvim-cmp](https://github.com/hrsh7th/nvim-cmp)
+2. 补全源：补全引擎需要的数据来源 来自 Language Server 提供的数据  它知道某个类有哪些属性和方法
+3. snippet 引擎：自定义代码段的引擎，常见的有 vsnip、luasnip snippy、 ultisnips
+
+
+-- lua/plugins/nvim-cmp.lua
+```lua
+return {
+    "hrsh7th/nvim-cmp",
+    dependencies = {
+        'neovim/nvim-lspconfig',
+        'hrsh7th/cmp-nvim-lsp',  --内置 LSP 提供的补全内容
+        'hrsh7th/cmp-buffer',  --补全当前 buffer 的内容
+        'hrsh7th/cmp-path',  --补全路径
+        'hrsh7th/cmp-cmdline',  --命令行的补全
+
+        -- For vsnip users.
+        'hrsh7th/cmp-vsnip',
+        'hrsh7th/vim-vsnip',  --snippet 引擎
+
+        -- For luasnip users.
+        -- Plug 'L3MON4D3/LuaSnip',
+        -- Plug 'saadparwaiz1/cmp_luasnip',
+
+        -- For ultisnips users.
+        -- Plug 'SirVer/ultisnips',
+        -- Plug 'quangnguyen30192/cmp-nvim-ultisnips',
+
+        -- For snippy users.
+        -- Plug 'dcampos/nvim-snippy',
+        -- Plug 'dcampos/cmp-snippy',
+
+        -- 常见编程语言代码段
+        'rafamadriz/friendly-snippets',
+    },
+    config = function()
+    end,
+}
+```
+- 说明
+  补全引擎插:hrsh7th/nvim-cmp
+  其他 cmp-xxx 基本都是插件补全来源
+  输入一个变量的时候，可以从多个来源显示补全的内容
+  rafamadriz/friendly-snippets 包含了大部分常用语言的代码段，非常强大
+
+
+```lua
+config = function()
+    local cmp = require 'cmp'
+
+    cmp.setup({
+        snippet = {
+            -- REQUIRED - you must specify a snippet engine
+            expand = function(args)
+                vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+                require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+                -- require('snippy').expand_snippet(args.body) -- For `snippy` users.
+                -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+                -- vim.snippet.expand(args.body) -- For native neovim snippets (Neovim v0.10+)
+            end,
+        },
+        window = {
+            -- completion = cmp.config.window.bordered(),
+            -- documentation = cmp.config.window.bordered(),
+        },
+        experimental = {
+            ghost_text = true,
+        },
+        -- 快捷键设置
+        mapping = require("keybindings").nvimCmp(cmp),
+        -- mapping = cmp.mapping.preset.insert({
+        --     ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+        --     ['<C-f>'] = cmp.mapping.scroll_docs(4),
+        --     ['<C-Space>'] = cmp.mapping.complete(),
+        --     ['<C-e>'] = cmp.mapping.abort(),
+        --     ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+        -- }),
+        sources = cmp.config.sources({
+            { name = 'nvim_lsp' },
+            { name = 'vsnip' }, -- For vsnip users.
+            { name = 'path' },
+            { name = 'luasnip' }, -- For luasnip users.
+            -- { name = 'ultisnips' }, -- For ultisnips users.
+            -- { name = 'snippy' }, -- For snippy users.
+        }, {
+            { name = 'buffer' },
+        }),
+
+        -- 这块官方没有 从别的文章里复制来的 和telescope的format有何区别？
+        formatting = {
+            -- Set order from left to right
+            -- kind: single letter indicating the type of completion
+            -- abbr: abbreviation of "word"; when not empty it is used in the menu instead of "word"
+            -- menu: extra text for the popup menu, displayed after "word" or "abbr"
+            fields = { 'abbr', 'menu' },
+
+            -- customize the appearance of the completion menu
+            format = function(entry, vim_item)
+                vim_item.menu = ({
+                    nvim_lsp = '[Lsp]',
+                    luasnip = '[Luasnip]',
+                    buffer = '[File]',
+                    path = '[Path]',
+                })[entry.source.name]
+                return vim_item
+            end,
+        },
+    })
+
+    -- To use git you need to install the plugin petertriho/cmp-git and uncomment lines below
+    -- Set configuration for specific filetype.
+    --[[ cmp.setup.filetype('gitcommit', {
+        sources = cmp.config.sources({
+            { name = 'git' },
+        }, {
+            { name = 'buffer' },
+        })
+    })
+    require("cmp_git").setup() ]] --
+
+    -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
+    cmp.setup.cmdline({ '/', '?' }, {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = {
+            { name = 'buffer' }
+        }
+    })
+
+    -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+    cmp.setup.cmdline(':', {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = cmp.config.sources({
+            { name = 'path' }
+        }, {
+            { name = 'cmdline' }
+        }),
+        matching = { disallow_symbol_nonprefix_matching = false }
+    })
+
+    -- 这部分移入lsp中  做什么用的？
+    -- Set up lspconfig.
+    -- local capabilities = require('cmp_nvim_lsp').default_capabilities()
+    -- -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
+    -- require('lspconfig')['<YOUR_LSP_SERVER>'].setup {
+    --     capabilities = capabilities
+    -- }
+end,
+```
+- 说明
+  formatting: 这块官方没有 从别的文章里复制来的 和telescope的format有何区别？
+  cmp.mapping.confirm({ select = false })  
+  弹出菜单没选中的情况下 false:回车后 新起一行  true：默认用第一项
+
+- keybindings.lua
+```lua
+pluginKeys.nvimCmp = function(cmp)
+    local feedkey = function(key, mode)
+        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
+    end
+
+    local has_words_before = function()
+        unpack = unpack or table.unpack
+        local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+        return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+    end
+
+    return cmp.mapping.preset.insert({
+        ['<C-u>'] = cmp.mapping.scroll_docs(-4),
+        ['<C-d>'] = cmp.mapping.scroll_docs(4),
+        ['<C-Space>'] = cmp.mapping.complete(),
+        -- 出现补全
+        ["<A-.>"] = cmp.mapping(cmp.mapping.complete(), { "i", "c" }),
+        -- 取消
+        ["<A-,>"] = cmp.mapping({
+            i = cmp.mapping.abort(),
+            c = cmp.mapping.close()
+        }),
+
+        -- Use <C-k/j> to switch in items
+        ['<C-k>'] = cmp.mapping.select_prev_item(),
+        ['<C-j>'] = cmp.mapping.select_next_item(),
+        ['<C-e>'] = cmp.mapping.abort(),
+        ['<CR>'] = cmp.mapping.confirm({
+            select = true,
+            behavior = cmp.ConfirmBehavior.Replace,
+        }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+        -- ["<Tab>"] = cmp.mapping(function(fallback)
+        --     local luasnip = require("luasnip")
+        --     if cmp.visible() then
+        --         cmp.select_next_item()
+        --         -- You could replace the expand_or_jumpable() calls with expand_or_locally_jumpable()
+        --         -- they way you will only jump inside the snippet region
+        --     elseif luasnip.expand_or_jumpable() then
+        --         luasnip.expand_or_jump()
+        --     elseif has_words_before() then
+        --         cmp.complete()
+        --     else
+        --         fallback()
+        --     end
+        -- end, { "i", "s" }),
+        --
+        -- ["<S-Tab>"] = cmp.mapping(function(fallback)
+        --     local luasnip = require("luasnip")
+        --     if cmp.visible() then
+        --         cmp.select_prev_item()
+        --     elseif luasnip.jumpable(-1) then
+        --         luasnip.jump(-1)
+        --     else
+        --         fallback()
+        --     end
+        -- end, { "i", "s" }),
+        -- 自定义代码段跳转到下一个参数
+
+        --     if vim.fn["vsnip#available"](1) == 1 then
+        --         feedkey("<Plug>(vsnip-expand-or-jump)", "")
+        --     end
+        -- end, { "i", "s" }),
+        --
+        -- -- 自定义代码段跳转到上一个参数
+        -- ["<C-h>"] = cmp.mapping(function()
+        --     if vim.fn["vsnip#jumpable"](-1) == 1 then
+        --         feedkey("<Plug>(vsnip-jump-prev)", "")
+        --     end
+        -- end, { "i", "s" }),
+
+        -- Super Tab
+        ["<Tab>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+                cmp.select_next_item()
+            elseif vim.fn["vsnip#available"](1) == 1 then
+                feedkey("<Plug>(vsnip-expand-or-jump)", "")
+            elseif has_words_before() then
+                cmp.complete()
+            else
+                fallback() -- The fallback function sends a already mapped key. In this case, it's probably `<Tab>`.
+            end
+        end, { "i", "s" }),
+
+        ["<S-Tab>"] = cmp.mapping(function()
+            if cmp.visible() then
+                cmp.select_prev_item()
+            elseif vim.fn["vsnip#jumpable"](-1) == 1 then
+                feedkey("<Plug>(vsnip-jump-prev)", "")
+            end
+        end, { "i", "s" })
+        -- end of super Tab
+    })
+end
+```
+
+[使用tab跳转](.com/hrsh7th/nvim-cmp/wiki/Example-mappings#super-tab-like-mapping)
 
 
 
 
+- 问题1： lua的弹出补全 回车后显示两份函数 ts没这个问题 lua的ls出bug了？
+  关闭3个地方的luasnip后 就正常了
+```lua
+  snippet.expand {
+    --require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+  sources = {
+    -- { name = 'luasnip' }, -- For luasnip users.
+  formatting = {
+    format = function()
+      -- luasnip = '[Luasnip]',
 
+  映射中behavior可控制上述行为 但是测试无效
+  ['<CR>'] = cmp.mapping.confirm({
+      select = true,
+      behavior = cmp.ConfirmBehavior.Replace,
+  }),
+  behavior = cmp.ConfirmBehavior.Replace：确认补全时会替换当前光标所在的单词，而不是在其后追加
+```
+
+
+## 美化lsp
+
+lsp/ui.lua 在plugins/lsp.lua中require它
+```lua
+vim.diagnostic.config({
+  virtual_text = true,  --右侧显示的文字
+  signs = true,  --左侧的图标
+  -- 在输入模式下也更新提示，设置为 true 也许会影响性能
+  update_in_insert = true,
+})
+local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
+for type, icon in pairs(signs) do
+  local hl = "DiagnosticSign" .. type
+  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+end
+```
 
 
 

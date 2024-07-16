@@ -2,6 +2,35 @@
 
 ## 环境搭建
 
+
+### nodejs
+  nvm ls
+  提示node版本太旧了 本地为14.21.3 为了跑laya的环境
+  nvm install --lts  升级到20.15.1
+  nvm use 20.15.1
+
+- 安装插件
+```
+  npm i -g layaair-cmd layaair2-cmd layadcc layanative2
+  npm i -g anywhere gulp lite-server live-server nodemon rollup rollup-plugin-typescript2 
+  npm i -g typescript uglify-js iconv-lite
+  npm i -g mgc-cli-external minidev tmg @oppo-minigame/cli   各种小游戏平台需要的工具
+    tmg 抖音
+    mgc-cli-external 美团  安装后命令：mgc
+    minidev@1.8.4  支付宝 项目中用了这个版本
+    @oppo-minigame/cli 安装后得到命令：quickgame
+  npm install -g @oppo-minigame/cli
+
+  layaair2-cmd 安装报错：
+    error ReferenceError: primordials is not defined
+  解决：从14.21.3中复制过来
+```
+
+- 升级到20.15.1 编译武侠工程报错
+- 
+
+
+### 环境安装
 - npm install
 
 - 编译库 npm run build
