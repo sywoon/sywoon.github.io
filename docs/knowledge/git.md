@@ -81,6 +81,28 @@ git push 推送提交
 git cherry-pick <HashA> <HashB> 
 ```
 
+
+## 取消某个文件夹的提交
+1. 暂存区中移除：已经通过git add方法加入
+```
+git reset folder
+```
+2. 从历史记录中移除：有提交记录
+```
+git rm -r --cached folder
+echo folder >> .gitignore
+git ci -m "remove folder form repository"
+```
+3. 撤销最近一次提交
+```
+git reset --soft head~1
+git reset head foler
+git restore --staged folder
+```
+
+
+
+
 ## 本地开发分支和master主分支
 正常master为稳定功能 若自己要开发新功能 应该开新的本地分支 比如：dev
 开发过程中 若要更新master版本 只需要git rebase master即可

@@ -1249,6 +1249,12 @@ pcall(telescope.load_extension, "projects")
 2. 运行命令 :lua print(require("project_nvim.utils.path").historyfile) 就可以看到 project_history 文件的路径
 3. 这里显示的是 ~/.local/share/nvim/project_nvim/project_history 这个文件，我们可以直接手动修改这个文件，仅保存常用的项目; c:\users\S\AppData\Local\nvim-data\project_nvim\project_history
 
+- projects使用：
+  :Telescope projects
+
+
+
+
 
 ## Neovim语法高亮的安装与配置
 
@@ -1915,6 +1921,49 @@ for type, icon in pairs(signs) do
   vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
 end
 ```
+
+- onsails/lspkind-nvim
+封装了很多常见的小图标
+啥效果？
+
+
+## lspsaga.nvim
+[github](https://github.com/nvimdev/lspsaga.nvim)_
+根据官方安装 而非文档中的配置
+
+https://github.com/nvimdev/lspsaga.nvim.git
+C:/Users/admin/AppData/Local/nvim-data/lazy/
+竟然lazy自动安装失败了 - vpn没开
+
+- 替换原有lsp的功能 用saga代替
+```lua
+ map("n", "<leader>rn", "<cmd>Lspsaga rename<CR>", opt)
+map("n", "<F2>", "<cmd>Lspsaga rename<CR>", opt)
+map("n", "<leader>ca", "<cmd>Lspsaga code_action<CR>", opt)
+-- map('n', 'gd', '<cmd>Lspsaga preview_definition<CR>', opt)  废弃了
+map('n', 'gd', '<cmd>Lspsaga goto_definition<CR>', opt)
+map('n', 'gD', '<cmd>Lspsaga peek_definition<CR>', opt)
+map("n", "gh", "<cmd>Lspsaga hover_doc<cr>", opt)
+map("n", "gr", "<cmd>Lspsaga lsp_finder<CR>", opt)
+
+-- map("n", "<F2>", vim.lsp.buf.rename, bufopts)
+-- map("n", "<leader>rn", vim.lsp.buf.rename, bufopts)
+-- map("n", "<leader>ca", vim.lsp.buf.code_action, bufopts)
+-- map('n', 'gd', vim.lsp.buf.definition, bufopts)
+-- map('n', 'gh', vim.lsp.buf.hover, bufopts)
+-- map('n', 'gr', vim.lsp.buf.references, bufopts)
+
+map("n", "gp", "<cmd>Lspsaga show_line_diagnostics<CR>", opt)
+map("n", "gj", "<cmd>Lspsaga diagnostic_jump_next<cr>", opt)
+map("n", "gk", "<cmd>Lspsaga diagnostic_jump_prev<cr>", opt)
+-- map("n", "gp", "<cmd>lua vim.diagnostic.open_float()<CR>", opt)
+-- map("n", "gk", "<cmd>lua vim.diagnostic.goto_prev()<CR>", opt)
+-- map("n", "gj", "<cmd>lua vim.diagnostic.goto_next()<CR>", opt)
+```
+
+
+
+
 
 
 

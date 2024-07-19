@@ -776,8 +776,32 @@ end
 ```
 
 
-## copilot支持
+## 多个相同字符一起编辑
+mg979/vim-visual-multi
+类似vsc中的Ctrl-d
+```
+  Ctrl-n 选中单词 n/N 选下一个 q调过 Q？  ia编辑
+  Ctrl-Down/Up 纵向选中
+  Tab切换 cursor模式和extend模式 类似normal和visual ？
+  :help visual-multi
+```
 
+
+## 注释插件
+默认gcc够大部分情况 选中需要注释的行即可
+- tpope/vim-commentary
+gcap 注释一段 包含函数名
+gciB 注释函数内部
+gcaB 注释整个函数
+
+
+
+
+
+
+
+## copilot支持
+[copilot](https://github.com/github/copilot.vim)
 ```
 自动安装：
 pulgins/copolit.lua
@@ -815,6 +839,43 @@ window powershell:
   .gitignore中忽略这个目录：
      nvim2/pack/github/start/
 ```
+
+
+## 不同项目 nvimtree过滤规则不同
+
+- project.lua
+```
+project.setup({
+  -- 自动加载项目配置 让不同的项目可以有不同的配置
+  local function load_project_config()
+      local project_config_path = vim.fn.getcwd() .. '/.nvim/config.lua'
+      if vim.fn.filereadable(project_config_path) == 1 then
+          dofile(project_config_path)
+      end
+  end
+
+  -- 在进入项目时加载配置
+  vim.api.nvim_create_autocmd("VimEnter", {
+      callback = load_project_config
+  })
+
+  -- 在切换目录时加载配置
+  vim.api.nvim_create_autocmd("DirChanged", {
+      callback = load_project_config
+  })
+```
+
+- 项目文件夹中新建  .nvim/config.lua
+```lua
+require'nvim-tree'.setup {
+  filters = {
+    dotfiles = false,
+    custom = { 'node_modules', '.git', 'assets', '.ts.meta', '.js.meta' }
+  }
+}
+```
+cd projectpath
+nvim .
 
 
 

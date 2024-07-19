@@ -199,7 +199,8 @@ Failed to run `config` for telescope.nvim                                       
 到上层目录
 ```
 
-```blankline
+- blankline
+```lua
 You are trying to call the setup function of indent-blankline version 2, but you have 
 version 3 installed.  Take a look at the GitHub wiki for instructions on how to migrate, or revert back to version 2.  
 解决：
@@ -214,6 +215,25 @@ version 3 installed.  Take a look at the GitHub wiki for instructions on how to 
     commit = "29be0919b91fb59eca9e90690d76014233392bef",
 }
 ```
+- blankline 排除dashboard
+[issues](https://github.com/lukas-reineke/indent-blankline.nvim/issues/644)
+```
+:help ibl.config.exclude 会报错
+-- v3
+exclude = {
+  filetypes = {
+    "dashboard",
+  },
+},
+-- v2
+buftype_exclude = {"terminal"},
+filetype_exclude = {"dashboard", "NvimTree", "alpha"},
+--
+这两个无效：
+vim.g.indent_blankline_buftype_exclude = { 'terminal' }
+vim.g.indent_blankline_filetype_exclude = { "dashboard", "NvimTree", "alpha", "help" }
+```
+
 
 ### 配置后的快捷键
 
