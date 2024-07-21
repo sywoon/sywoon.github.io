@@ -1009,6 +1009,22 @@ Telescope 提供了一种统一的方式来访问和操作多种数据源，如�
     require('telescope').load_extension('fzf')
 ```
 
+- wsl环境中 fzf编译失败 导致启动时报错
+```
+E5113: Error while calling lua chunk: .../start/telescope.nvim/lua/telescope/_extensions/init.lua:10: 'fzf' extension doesn't exi
+st or isn't installed: ...k/packer/start/telescope-fzf-native.nvim/lua/fzf_lib.lua:11: /home/syw/.local/share/nvim/site/pack/pack
+er/start/telescope-fzf-native.nvim/lua/../build/libfzf.so: cannot open shared object file: No such file or directory
+stack traceback:
+        [C]: in function 'error'
+        .../start/telescope.nvim/lua/telescope/_extensions/init.lua:10: in function 'load_extension'
+
+官方编译方案：
+use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release' }
+进入目录：
+\\wsl.localhost\Ubuntu-24.04\home\syw\.local\share\nvim\site\pack\packer\start\telescope-fzf-native.nvim\
+得到：build/libfzf.so
+```
+
 
 - telescope-env.nvim
 列出系统变量
@@ -1249,9 +1265,13 @@ pcall(telescope.load_extension, "projects")
 2. 运行命令 :lua print(require("project_nvim.utils.path").historyfile) 就可以看到 project_history 文件的路径
 3. 这里显示的是 ~/.local/share/nvim/project_nvim/project_history 这个文件，我们可以直接手动修改这个文件，仅保存常用的项目; c:\users\S\AppData\Local\nvim-data\project_nvim\project_history
 
-- projects使用：
-  :Telescope projects
 
+- projects使用：
+```lua
+  :ProjectRoot  手动添加当前目录
+  :Telescope projects  切换项目
+  vim.api.nvim_set_keymap('n', '<leader>fp', ':Telescope projects<CR>', { noremap = true, silent = true })
+```
 
 
 
@@ -1447,6 +1467,8 @@ ESC 关闭窗口
 ```
 
 ### 配置 LSP Server
+
+#### 使用Lsp-installter (废弃)
 [lsp-installer升级为mason](https://article.juejin.cn/post/7154005621887631396)
 - nvim-lsp-installer
 已经不维护了 改为mason
@@ -1499,6 +1521,169 @@ servers = {
 2. 判断是否安装 若否自动安装
 3. 监听ready事件 lsp server准备好后会调用; 判断配置中是否有on_setup
    若有调用之，将不同语言的配置独立分开
+
+
+#### 使用mason
+python语言服务(pylsp)需要先安装python3
+sudo apt install python3
+
+- packer: 
+init.lua
+```lua
+require "plugin-config.lsp"
+```
+plugin-config/lsp.lua
+```lua
+- 安装列表
+-- { key: 语言 value: 配置文件 }
+-- key 必须为下列网址列出的名称
+-- https://github.com/williamboman/nvim-lsp-installer#available-lsps
+local servers = {
+    lua_ls = require("lsp.lua"), -- lua/lsp/lua.lua
+    pylsp = {},
+    tsserver = {},
+    eslint = {},
+    html = require ("lsp.html"),
+    cssls = require ("lsp.css"),
+}
+require("mason").setup({
+    ui = {
+        icons = {
+            package_installed = "✓",
+            package_pending = "➜",
+            package_uninstalled = "✗"
+        }
+    }
+})
+
+require("mason-lspconfig").setup({
+    -- 确保安装，根据需要填写
+    -- ensure_installed = { "lua_ls", "pylsp", },
+    ensure_installed = vim.tbl_keys(servers),
+})
+
+local lspconfig = require('lspconfig')
+-- local capabilities = require('cmp_nvim_lsp').default_capabilities()
+for name, svrCfg in pairs(servers) do
+    -- 第一版本 所有语言一个配置
+    -- lspconfig[name].setup({
+    --     on_attach = require('keybindings').mapLSP
+    --     -- on_attach = on_attach,
+    -- })
+    -- 第二版本 所有语言都独立配置
+    -- lspconfig[name].setup(svrCfg)
+    -- 第三版本 公共部分保留 具体语言配置 只存放个性化部分
+    lspconfig[name].setup(
+        vim.tbl_deep_extend("keep",
+            {
+                on_attach = require('keybindings').mapLSP,
+                -- capabilities = capabilities
+            },
+            svrCfg
+        )
+    )
+end
+```
+
+- lazy:
+plugins/lsp.lua
+```lua
+-- require "lsp.ui"
+
+return {
+    "neovim/nvim-lspconfig",
+    cmd = { "Mason", "Neoconf" },
+    event = { "BufReadPost", "BufNewFile" },
+    dependencies = {
+        "williamboman/mason.nvim",
+        "williamboman/mason-lspconfig.nvim",
+        -- "hrsh7th/cmp-nvim-lsp",  独立出去
+    },
+    config = function()
+        -- 安装列表
+        -- { key: 语言 value: 配置文件 }
+        -- key 必须为下列网址列出的名称
+        -- https://github.com/williamboman/nvim-lsp-installer#available-lsps
+        local servers = {
+            lua_ls = require("lsp.lua"), -- lua/lsp/lua.lua
+            pylsp = require("lsp.python"),
+            tsserver = require ("lsp.typescript"),
+            eslint = {},
+            html = require ("lsp.html"),
+            cssls = require ("lsp.css"),
+        }
+        require("mason").setup({
+            ui = {
+                icons = {
+                    package_installed = "✓",
+                    package_pending = "➜",
+                    package_uninstalled = "✗"
+                }
+            }
+        })
+        require("mason-lspconfig").setup({
+            -- 确保安装，根据需要填写
+            -- ensure_installed = { "lua_ls", "pylsp", },
+            ensure_installed = vim.tbl_keys(servers),
+        })
+
+        local lspconfig = require('lspconfig')
+        local capabilities = require('cmp_nvim_lsp').default_capabilities()
+        for name, svrCfg in pairs(servers) do
+            -- 第一版本 所有语言一个配置
+            -- lspconfig[name].setup({
+            --     on_attach = require('keybindings').mapLSP
+            --     -- on_attach = on_attach,
+            -- })
+            -- 第二版本 所有语言都独立配置
+            -- lspconfig[name].setup(svrCfg)
+            -- 第三版本 公共部分保留 具体语言配置 只存放个性化部分
+            lspconfig[name].setup(
+                vim.tbl_deep_extend("keep",
+                    {
+                        on_attach = require('keybindings').mapLSP,
+                        capabilities = capabilities
+                    },
+                    svrCfg
+                )
+            )
+        end
+    end
+}
+```
+
+
+- 问题1：wsl中自动安装python语言服务-pyls失败
+Package(name=python-lsp-server) error=spawn: python3 failed with exit code 1 and signal 0. 
+```
+  解决：
+  python3 --version
+  pip install python-lsp-server -失效 改为：
+  sudo apt install python3-lsp-server
+  发现没有pip命令：
+  sudo apt install python3-pip
+  其他搜索到的安装方式都失效
+
+  pip成功了 但是语言服务不行
+  × This environment is externally managed
+  说明你的系统是受外部管理的，不允许在系统范围内安装Python包。为了避免对系统造成影响，可以使用虚拟环境来安装和管理Python包:
+  1. 建虚拟环境的工具
+  sudo apt update
+  sudo apt install python3-venv
+  2. 创建虚拟环境
+  python3 -m venv myenv
+  3. 激活虚拟环境
+  source myenv/bin/activate
+  4. 安装python-lsp-server
+  pip install python-lsp-server
+  5. 运行LSP服务器
+  在激活的虚拟环境中运行LSP服务器
+  重新打开Mason会自动安装
+```
+- 验证： 打开test.py
+看gd gh 功能是否正常
+
+
 
 
 #### lua server
@@ -1634,6 +1819,22 @@ formatting_sync 函数不存在  所以保存lua代码会报错
 2. 补全源：补全引擎需要的数据来源 来自 Language Server 提供的数据  它知道某个类有哪些属性和方法
 3. snippet 引擎：自定义代码段的引擎，常见的有 vsnip、luasnip snippy、 ultisnips
 
+- packer: plugins.lua
+```lua
+ --------------------- cmp --------------------
+    use({ "hrsh7th/nvim-cmp" })
+
+    use({ 'hrsh7th/cmp-nvim-lsp' })
+    use({ 'hrsh7th/cmp-buffer' })
+    use({ 'hrsh7th/cmp-path' })
+    use({ 'hrsh7th/cmp-cmdline' })
+    use({ 'hrsh7th/cmp-vsnip' })
+    use({ 'hrsh7th/vim-vsnip' })
+    -- 常见编程语言代码段
+    use({ 'rafamadriz/friendly-snippets' })
+
+    config部分两者相同
+```
 
 -- lua/plugins/nvim-cmp.lua
 ```lua
@@ -1923,8 +2124,29 @@ end
 ```
 
 - onsails/lspkind-nvim
-封装了很多常见的小图标
-啥效果？
+用类似vsc的界面 美化lsp原来的窗口 比如重命名 语法错误选择等
+
+### packer方式安装
+- plugins.lua
+```lua
+  --------------------- others --------------------
+  use {
+      "windwp/nvim-autopairs",
+      event = "InsertEnter",
+      config = function()
+          require("nvim-autopairs").setup {}
+      end
+  }
+  use({ 'mg979/vim-visual-multi' }) --模拟vsc的ctrl+d多选
+  -- "tpope/vim-commentary",     --模拟vsc的ctrl+/注释
+  use({ "numToStr/Comment.nvim" })
+
+  -- 为 neovim 内置 lsp 添加类似 vscode 的象形图
+  -- 美化各种lsp的窗口提示 比如重命名 语法纠正等
+  use({ 'onsails/lspkind-nvim' })
+```
+
+
 
 
 ## lspsaga.nvim
@@ -1960,6 +2182,83 @@ map("n", "gk", "<cmd>Lspsaga diagnostic_jump_prev<cr>", opt)
 -- map("n", "gk", "<cmd>lua vim.diagnostic.goto_prev()<CR>", opt)
 -- map("n", "gj", "<cmd>lua vim.diagnostic.goto_next()<CR>", opt)
 ```
+
+
+
+## 代码格式化
+前面lsp的功能 已经够支持格式化了
+leader-f : vim.lsp.buf.format({ async = true })
+:LspInfo  可以查看当前那个ls在支持  lua使用了之前安装的lua_ls
+
+
+### 方式1：formatter.nvim
+[github](https://github.com/mhartington/formatter.nvim?tab=readme-ov-file)
+依赖[StyLua](https://github.com/JohnnyMorganz/StyLua)
+
+
+
+### 方式2：为Language server注入格式化功能
+[null-ls.nvim](https://github.com/jose-elias-alvarez/null-ls.nvim)
+一个通用 Language Server 来给编辑器注入代码补全，格式化，提示，code actions 等新功能
+作者已不再维护
+
+
+
+## Neovim前端开发的必要配置
+
+- Tree-sitter 配置
+前端语法高亮
+:TSInstallInfo 或者 :TSModuleInfo 查看语法安装
+找到目标 按i就会安装某个语言
+
+- 自动安装
+```
+treesitter.lua中配置
+ensure_installed = { "c", "markdown", "json"
+```
+
+- 手动安装
+```
+:TSInstall css scss json html vue javascript typescript
+```
+
+- 安装后配置lsp来使用
+lsp.lua
+```
+  html = require("lsp.config.html"),
+  cssls = require("lsp.config.css"),
+```
+
+
+## 注释
+[comment](https://github.com/numToStr/Comment.nvim)
+代替原来的"tpope/vim-commentary",     --模拟vsc的ctrl+/注释
+之前的有bug：gcap和gcip一样的效果 
+新插件效果：
+```
+  gcw 注释一个单词 可用于函数默认参数
+  gcc 单行//
+  gbc 单行/**/
+  gci{ 函数内
+  gca}{  整个函数
+  gcA 行末尾加注释//
+  gcO gco 行/下新行加注释
+```
+
+
+## 配置 Debug 断点调试
+[nvim-dap](https://github.com/mfussenegger/nvim-dap)
+
+
+
+
+
+
+
+
+
+
+
 
 
 
