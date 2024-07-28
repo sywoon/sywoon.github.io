@@ -1212,7 +1212,10 @@ db.custom_center = {
 ```
 有几个功能无效  根据实际情况来添加
 
-
+- 删除：C:\Users\S\AppData\Local\nvim-data\shada\ 可以清理dashboard中most recent files记录
+- 怎么删除recent project记录？
+1. windows中删除%temp%目录  具体地址：
+C:\Users\S\AppData\Local\Temp\nvim\dashboard  %temp%\nvim
 
 
 
@@ -1264,6 +1267,7 @@ pcall(telescope.load_extension, "projects")
 1. 但有时候会发现 project 列表并不是我常用的项目列表，列出了很多没用的项目，这时候就需要手动编辑 project_history 列表了
 2. 运行命令 :lua print(require("project_nvim.utils.path").historyfile) 就可以看到 project_history 文件的路径
 3. 这里显示的是 ~/.local/share/nvim/project_nvim/project_history 这个文件，我们可以直接手动修改这个文件，仅保存常用的项目; c:\users\S\AppData\Local\nvim-data\project_nvim\project_history
+注意: 只能清除projects自己界面中的记录 不能清楚dashboard中的recent projects记录
 
 
 - projects使用：
@@ -1272,6 +1276,20 @@ pcall(telescope.load_extension, "projects")
   :Telescope projects  切换项目
   vim.api.nvim_set_keymap('n', '<leader>fp', ':Telescope projects<CR>', { noremap = true, silent = true })
 ```
+
+## projects和dashboard配合使用
+1. 清理记录
+   dashboard：C:\Users\S\AppData\Local\Temp\nvim\dashboard
+   projects: C:\Users\S\AppData\Local\nvim-data\project_nvim\
+2. 添加新项目 
+   vi . 打开某个工程
+   :ProjectRoot 手动添加 注意：在dashboard 而非projects界面(:Telescope projects)中显示-手动添加目录？
+   只有打开过一次该项目 才会出现在dashboard中
+---
+上面搞错了 在用的不是project.nvim 而是 telescope-project.nvim是对前者的扩展
+1. 在打开的界面中 normal模式 
+  d 删除选中的项目记录
+
 
 
 
