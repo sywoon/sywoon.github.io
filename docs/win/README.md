@@ -21,6 +21,20 @@
 https://www.nirsoft.net/ 还有很多软件：进程查看 网络等
 
 
+4. understand
+[破解](https://blog.csdn.net/weixin_48220838/article/details/131297065)
+[官方下载](https://licensing.scitools.com/download)
+[exe修改器](https://mh-nexus.de/en/downloads.php?product=HxD20)
+  a. 用官方exe安装
+  b. 复制bin/understand.exe到外部
+  c. 用HxD打开exe
+    ctrl-f 搜索 areYouThere 用IamNotHere!代替  直接Ctrl-v即可，前面的搜索会选中这块内容
+    回到顶部，以字节序列模式搜索"45 33 FF 41 0F B6 C6 48 3B DF 44 0F 4E F8"，替换为
+    "41 BF 01 00 00 00 90 90 90 90 90 90 90 90"
+    Ctrl+S保存退出 将exe覆盖回去
+
+
+
 
 ## win技巧
 

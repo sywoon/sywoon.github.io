@@ -116,6 +116,30 @@ d     删除块
 ~     切换块中内容的大小写 
 ```
 
+### 替换模式
+gR 类似insert模式 会替换光标下的字母
+
+
+### 可视模式
+viw 选中一个单词 
+  d/x 删除 回到normal模式
+  c 删除 并进入输入模式
+v visual/normal 之间切换  比esc/C-[好用
+C-q v-block
+S-v v-line
+gv 上次选中的块
+o 切换选中区域的活动端 再按b/e来扩展内容
+
+
+#### 选中相关
+vip vap 表现相同 整个函数包含函数名
+viB vaB 表现相同 以块为选中范围
+Enter Backspace 使用lsp的功能 逐步扩展选中
+
+#### flash.nvim中的选中
+S 快速选中代码块  完全代替之前的vap vaB
+f/F 会代替原来的功能 但是没法回车 有bug？ 可以用h/l来代替 会偏移一个位
+
 
 ### buffer的原始操作
 ```
@@ -130,10 +154,6 @@ d     删除块
 ```
 
 
-### 选中相关
-vip vap 表现相同 整个函数包含函数名
-viB vaB 表现相同 以块为选中范围
-Enter Backspace 使用lsp的功能 逐步扩展选中
 
 
 ### 跳转
@@ -141,7 +161,9 @@ Enter Backspace 使用lsp的功能 逐步扩展选中
 f/F char  查找来定位 ; ,前后跳
 [m ]m 跳函数； 不大好按 使用快捷键C-[ C-]; js可以 lua不行 为何？
 { } 跳空行
-
+zz 当前行居中
+zt 当前行置顶
+zb 当前行置底
 
 
 

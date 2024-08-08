@@ -1704,8 +1704,30 @@ Package(name=python-lsp-server) error=spawn: python3 failed with exit code 1 and
 
 
 
-#### lua server
-- lua/lsp/config/lua.lua
+#### lua language server
+lua_ls = require("lsp.lua"), 
+
+- 自动安装： Mason
+```
+C:\Users\admin\AppData\Local\nvim-data\mason\packages\lua-language-server\bin
+根据配置'LuaJIT'找到语法分析目录
+C:\Users\admin\AppData\Local\nvim-data\mason\packages\lua-language-server\meta\LuaJIT en-us utf8\
+修改table.lua   测试发现重启nvim后 这些文件会被还原 ！！！ 怎么扩展修改？
+可以看到目录中海油lua5.4版本
+```
+
+- 手动安装： 废弃
+[下载lua-ls](https://luals.github.io/#install) 
+lua-language-server-3.9.3-win32-x64.zip 将bin目录放到path中 
+后面启动nvim打开lua文件时 会发现自动启动了lua-language-server.exe 且不同nvim进程都有独立的对应lua-ls.exe
+
+- 自定义table 语法识别
+```
+C:\cinside\lua-language-server-3.9.3-win32-x64\meta\LuaJIT zh-cn utf8\
+table.lua 手动添加扩展的函数即可  否则代码中会有黄色警告
+```
+
+-- lua/lsp/lua.lua
 ```lua
 -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#sumneko_lua
 local runtime_path = vim.split(package.path, ';')

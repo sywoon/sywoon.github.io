@@ -650,6 +650,15 @@ stack traceback:
 
 ### lazy.nvim
 init.lua中添加
+init.lua中添加
+vim.fn.expand('~/nvim_log.txt')
+C:\Users\admin\nvim_log.txt
+
+vim.fn.stdpath("data")
+C:\Users\admin\AppData\Local\nvim-data\
+
+vim.fn.getcwd()  项目根目录
+
 ```lua
 -- 1. 准备lazy.nvim模块（存在性检测）
 -- stdpath("data")
@@ -801,7 +810,15 @@ gcaB 注释整个函数
 3. S 快速选中代码块  完全代替之前的vap vaB
 4. v进入选中模式 f找目标位置 来选中想要的代码块
 
+## nvim其他跳转
+C-[/]  跳转{} 可用于函数内 ；但还不是很好用
 
+### 标记跳转
+ma：标记位置a，小写字母。本文件内有效，多个文件可以有同样的标记名。
+mA：标记位置A，全局有效。全局有效，多个文件会互相覆盖，且可以在多个文件之间跳转。
+`a/`A：跳转到之前标记的位置a。
+"a：跳转到标记位置a的行的第一个非空白字符上。一般不常用。
+:marks可以查看所有的标记位置，也包括下面的特殊标记。
 
 
 ## copilot支持
