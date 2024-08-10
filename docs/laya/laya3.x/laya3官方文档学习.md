@@ -463,8 +463,44 @@ import { AStarFinder } from "../node_modules/astar-typescript/dist/astar";
 
 - 使用示例
 1. 下载[js库](https://github.com/bgrins/javascript-astar) 得到astar.js
-2. 放到src/libs/ 属性勾选导入为插件
+2. 放到src/libs/ 属性勾选导入为插件; 应该需要d.ts文件来辅助
 3. 发布后会自动加入release/web/index.html中
+
+
+
+##### 层级面板说明
+
+###### 层级面板的作用
+包括了2D节点与3D节点 
+2D与3D节点之间不可以混合形成父子层级关系
+
+
+###### 层级面板的通用操作
+
+- 创建3d节点：
+  sprite3d 基础3d模型（cube sphere 等） 特效（Particle3d PixelLine Trail） 灯光 相机
+
+- 创建2d节点：
+  - 基础：Sprite Animation Text SoundNode VideoNode
+  - ui组件：box image clip ...
+  - 2d骨骼动画: Spine Skeleton
+
+- 创建方式：
+  - 不选中 创建单独节点 挂在根节点下  [快捷键](https://layaair.com/3.x/doc/basics/IDE/shortcutKeyCombinations/readme.html)
+  - 父子节点
+
+
+-  搜索节点: 
+   -  搜索栏：过滤目标节点
+   -  资源面板：右键图片 在场景中查找
+
+- 隐藏节点： 层级面板 对象的最前面  注意：只影响ide 不影响实际运行
+
+- 锁定节点： 不可操作 往往用于复杂界面 
+
+- 节点的收缩与展开： 层级搜索后面 一键收缩功能  但无法还原
+
+- 节点排序：
 
 
 
