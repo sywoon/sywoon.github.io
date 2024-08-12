@@ -157,6 +157,16 @@ merge的记录 感觉和正常的记录有点不同  可以看到两个父节点
 ```
 
 
+- 情况5:mac github通过https方式无法push
+brew install --cask git-credential-manager
+下次命令push会打开浏览器来验证 
+凭据存储在 macOS 密钥链中，每次克隆 HTTPS URL 时都会使用 无需再次输入密码
+[参考](https://docs.github.com/zh/get-started/getting-started-with-git/caching-your-github-credentials-in-git)
+
+
+
+
+
 
 
 
