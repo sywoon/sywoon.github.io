@@ -114,6 +114,34 @@
 
 
 
+## 项目应用
+
+
+### ogg
+pip install pydub  
+解压ffmpeg-master-latest-win64-gpl-shared.zip到某个目录 并加入环境路径  
+
+
+### as keytool
+keytool -genkeypair -alias tlkey -keypass tlpass -keystore tlkeystore.jks -storepass tlpass
+CN=tl, OU=hk, O=hk, L=gz, ST=gd, C=cn
+
+
+### 缓存打包
+layadcc bin -cache -url http://192.168.40.61:9510/index.js -cout output
+更新项目 让手机包可以热更新
+layadcc bin
+
+
+### win32
+cd bin
+anywhere 9510
+
+
+### cache
+rd /s/q platforms\android_studio\app\src\main\assets\cache
+rd /s/q platforms\win32\appCache
+rd /s/q platforms\win32\localstorage
 
 
 
