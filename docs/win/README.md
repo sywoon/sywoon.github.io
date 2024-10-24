@@ -2,7 +2,8 @@
 
 
 ## win系统
-https://next.itellyou.cn/  下载原版iso  用迅雷-不限速  百度云不支持了
+https://next.itellyou.cn/  下载原版iso  用迅雷-不限速  百度云不支持了  用qq登录即可
+https://www.sordum.org/  下载暂停更新 暂停defender等系统软件  免费
 
 
 ## win软件
@@ -97,7 +98,18 @@ bash:
 6. ps图片背景透明
 用ps顶部的选择--主体--ctr+j，最新图层就是透明的
 
-
+7. 一键获得文件夹的所有者
+管理员运行cmd
+```
+  如果重装了系统 git文件夹拉取时 会提示权限问题 需要配置文件夹权限
+  git config --global --add safe.director 'f:/xxxxx'
+  takeown /f path /r 可一键获得
+  在某个盘符下执行
+```
+添加everyone用户权限
+cacls 文件或目录名 /p everyone:f /e
+包含子目录
+cacls 目录名 /p everyone:f /t
 
 
 
@@ -109,6 +121,8 @@ bash:
 
   恢复回Win11右键菜单：
   reg delete "HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}" /f
+  or
+  reg.exe delete "HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" /va /f
 
   重启Windows资源管理器生效：
   taskkill /f /im explorer.exe & start explorer.exe
