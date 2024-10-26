@@ -128,6 +128,9 @@ cacls 目录名 /p everyone:f /t
   taskkill /f /im explorer.exe & start explorer.exe
 ```
 
+2. 右键菜单txt没了
+win ： 所有应用： 找到notepad ： 右键应用设置
+点击重置中的修复按钮  ： 重启explorer
 
 
 
