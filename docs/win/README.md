@@ -132,10 +132,48 @@ cacls 目录名 /p everyone:f /t
 win ： 所有应用： 找到notepad ： 右键应用设置
 点击重置中的修复按钮  ： 重启explorer
 
+2. win11 安装需要启用TPM 2.0
+https://support.microsoft.com/zh-cn/windows/%E5%9C%A8%E7%94%B5%E8%84%91%E4%B8%8A%E5%90%AF%E7%94%A8-tpm-2-0-1fd5a332-360d-4f46-a1e7-ae6b0c90645c#bkmk_enable_tpm
+UEFI BIOS 中标有 “高级”、“ 安全性”或“ 受信任的计算”的子菜单中。 启用 TPM 的选项可能标记为“安全设备”、“安全设备支持”、“TPM 状态”、“AMD fTPM 交换机”、“AMD PSP fTPM”、“Intel PTT” 或“Intel 平台信任技术”。
+
+
+- 华硕主板
+　　1、首先重启电脑，在开机时连续敲击键盘“del”进入bios设置。
+　　2、点击“Advanced Mode”或者按“F7”找到“Advanced”选项。
+　　3、在其中选择“AMD fTPM configuration”
+　　4、找到下方的把“Selects TPM device”将它设置为“Enable Firmware TPM”
+　　5、在弹出窗口选择“OK”，再按下键盘“F10”进行保存即可。
+
+
+3. VMware虚拟机安装windows 11(win11) 跳过TPM2.0检查等
+https://winsec.cn/archives/VMwarewindows11win11TPM20
+```
+  shift+f10 调出cmd
+  regedit 打开注册表编辑器
+  在 HKEY_LOCAL_MACHINE\SYSTEM\Setup 下添加一项 名称为“labconfig”
+  在labconfig项下依次添加三个DWORD，值均为1 如图所示。
+  4.1. bypasstpmcheck
+  4.2. bypassramcheck
+  4.3. bypasssecurebootcheck
+```
 
 
 
+### scoop
+类似mac的brew
+- 安装
+```
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
+```
+- 使用
+```
+# 添加extras存储桶
+scoop bucket add extras
 
+# 安装lazygit
+scoop install lazygit
+```
 
 
 
