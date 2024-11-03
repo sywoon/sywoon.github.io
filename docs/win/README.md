@@ -4,6 +4,10 @@
 ## win系统
 https://next.itellyou.cn/  下载原版iso  用迅雷-不限速  百度云不支持了  用qq登录即可
 https://www.sordum.org/  下载暂停更新 暂停defender等系统软件  免费
+  一键关闭windows+defender defender control2.1  由于defender会把破解工具删除掉 需要先禁用
+  Wub-关闭win更新 update blocker v1.8
+  defender exclusion tool v1.4
+  W11右键菜单切换器 W11ClassicMenu
 
 
 ## win软件
