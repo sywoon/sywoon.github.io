@@ -22,8 +22,88 @@
 ## [neovim入门指南](/docs/knowledge/neovim/neovim入门指南.md)
 
 
+## terminal中快手启动项目
+将下面两个配置文件 放到系统路径
+- nvim_open_poem.bat  用于cmd中打开
+```
+@echo off
+
+::powershell -Command "$Host.UI.RawUI.WindowTitle = '诗歌项目'"
+
+cls
+::echo %0  ::带双引号
+::echo %~dp0  ::所在文件夹路径
+::echo %~dpn0  ::不含扩展名
+::echo %~0  ::全路径-含扩展名
+powershell %~dpn0.ps1
+```
+
+- nvim_open_poem.ps1 用于ps或terminal中运行
+```
+#Write-Output "ps1 called"
+#Write-Host "ps1 called"
+
+$Host.UI.RawUI.WindowTitle = "诗歌项目"
+Set-Location -Path "F:\HK_Games\PoemGame\poem_master\client\"
+nvim .
+```
+
+### termnial打开项目封装
+```
+#$args[0]
+param (
+    $Param1,
+    $Param2
+)
+
+Clear-Host
+
+#Write-Host "第一个参数: $Param1"
+#Write-Host "第二个参数: $Param2"
+#Write-Host "脚本所在的文件夹路径: $PSScriptRoot"
+#Write-Host "脚本的完整路径: $PSCommandPath"
+#$file_name = [System.IO.Path]::GetFileNameWithoutExtension($PSCommandPath)
+#Write-Host "脚本的文件夹路径和文件名（无扩展名）: $file_name" 
+
+if ($Param1 -eq "poem") {
+    $title = "诗歌项目"
+    $proj_path = "F:\HK_Games\PoemGame\poem_master\client\"
+}
+elseif ($Param1 -eq "card") {
+    $title = "卡牌项目"
+    $proj_path = "F:\HK_Games\CardGame\card_master\client\"
+}
+elseif ($Param1 -eq "box") {
+    $title = "box项目"
+    $proj_path = "F:\HK_Games\BoxGame\box_master\client\"
+}
+elseif ($Param1 -eq "pet") {
+    $title = "抓宠项目"
+    $proj_path = "F:\HK_Games\PetGame\pet_master\client\"
+}
+elseif ($Param1 -eq "nvim") {
+    $title = "nvim config"
+    $proj_path = "C:\Users\admin\AppData\Local\nvim"
+}
+elseif ($Param1 -eq "effect3d") {
+    $title = "effect3d"
+    $proj_path = "E:\github\u3d_effect_laya\u3d_effect_laya3\effect3d"
+}
+else {
+    # 如果参数既不是 "poem" 也不是 "story"，执行默认操作
+    Write-Host "未识别的参数。请传入 [nvim effect3d box poem pet card]"
+    return
+}
+
+$Host.UI.RawUI.WindowTitle = $title
+Set-Location -Path $proj_path
+nvim .
+```
+
+
 ## 安装
-官方下载nvim-win64.msi C:\Program Files\Neovim\
+官方下载[nvim-win64.msi](https://github.com/neovim/neovim/blob/master/INSTALL.md)   
+C:\Program Files\Neovim\
 会将nvim自动加入环境路径
 git config --global core.editor "nvim"
 
@@ -103,9 +183,10 @@ gnuwin32中没有tmux 可以安装Cygwin或Msys2
   这样输入bash时 自动跳转启动zsh
 
 **echo $HOME 查看家目录**
+[官网](https://ohmyz.sh/#install)
 - 手动安装 oh-my-zsh（已随文件附带，并且附带插件），将.oh-my-zsh和.zshrc放置Home目录
-- 自动安装：sh -c "$(curl -fsSL https://gitee.com/pocmon/ohmyzsh/raw/master/tools/install.sh)"   这是国内的镜像点 可无需代理安装
-- 国外原始地址：
+- 自动安装：sh -c "$(curl -fsSL https://gitee.com/pocmon/ohmyzsh/raw/master/tools/install.sh)"   这是国内的镜像点 可无需代理安装  --提示过时了 但还能用
+- 国外原始地址： 推荐
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
 - zshrc 文件中 plugins 变量改为：
@@ -118,17 +199,28 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/too
     )
   ```
 
-- powerlevel10k
+- powerlevel10k 插件
 - 插件bug：启动zsh会显示~ ←[?1h←[?1h 而且输入任何字符都会一直出现; 
 - 最新的gitbash没这个bug所以无需这么处理了
 - 解决：使用tag版本zsh-autosuggestions-0.6.4.zip [github](https://github.com/zsh-users/zsh-autosuggestions/tree/master)  替换：C:\Users\admin\.oh-my-zsh\custom\plugins\zsh-autosuggestions   --没用
 - 修改主题：通过设置为random 找到部分正常主题：steeef  kolo jnrowe 
 - 添加新主题：没有乱码！！！
+- 安装方式：bash中运行
 ```
 	git clone --depth=1 https://gitee.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
 	ZSH_THEME="powerlevel10k/powerlevel10k"
-	第一次启动会有很多配置选择 更加自己喜欢的即可
+	第一次启动会有很多配置选择 更加自己喜欢的即可  如果提前复制过这个文件 则不会提示配置
 	后续修改：.p10k.zsh
+```
+
+- zsh-autosuggestions插件
+```
+git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+```
+
+- zsh-syntax-highlighting插件
+```
+git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
 ```
 
 
@@ -250,6 +342,7 @@ Proportional Spacing（比例）比例间隔版本 每个字符占用的水平�
 
 
 ## tmux
+右键bash 可以运行这个tmux；但是terminal中的gitbash不能运行
 ```
 	https://github.com/trzsz/trzsz-go/releases/download/v1.1.7/trzsz_1.1.7_windows_x86_64.zip
 ```
@@ -258,7 +351,9 @@ Proportional Spacing（比例）比例间隔版本 每个字符占用的水平�
 ## C编译器
 ### cmake和make  
 windows中安装cmake即可
-- telescope-fzf-native 需要手动编译
+- telescope-fzf-native 需要手动编译  
+  - 最新版本修复了这个问题 只要提前安装了clang/vs
+  2022 第一次启动nvim是 会自动编译出AppData\Local\nvim-data\lazy\telescope-fzf-native.nvim\build\libfzf.dll
 - nvim-treesitter 需要编译动态库使用
 
 ### clang
@@ -789,7 +884,7 @@ end
 mg979/vim-visual-multi
 类似vsc中的Ctrl-d
 ```
-  Ctrl-n 选中单词 n/N 选下一个 q调过 Q？  ia编辑
+  Ctrl-n 选中单词 n/N 选下一个 q调过 Q？  i编辑-插入  c-删除
   Ctrl-Down/Up 纵向选中
   Tab切换 cursor模式和extend模式 类似normal和visual ？
   :help visual-multi
@@ -835,6 +930,15 @@ window powershell:
   git clone https://github.com/github/copilot.vim.git 
   $HOME/AppData/Local/nvim/pack/github/start/copilot.vim
 ```
+- nvim中启用copilot
+:Copilot signin 跳转网页
+
+- github设备验证
+device activation ：Enter the code displayed on your device
+找不到来源 从[microsoft security](https://www.microsoft.com/en-us/security/mobile-authenticator-app)
+先绑定github账号
+
+
 
 - nodejs升级
 ```
