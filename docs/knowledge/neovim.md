@@ -745,7 +745,6 @@ stack traceback:
 
 ### lazy.nvim
 init.lua中添加
-init.lua中添加
 vim.fn.expand('~/nvim_log.txt')
 C:\Users\admin\nvim_log.txt
 
@@ -897,6 +896,10 @@ mg979/vim-visual-multi
 gcap 注释一段 包含函数名
 gciB 注释函数内部
 gcaB 注释整个函数
+
+
+## 标记插件 chentoast/marks.nvim
+[marks.nvim](https://github.com/chentoast/marks.nvim)
 
 
 ## 跳转插件 folke/flash.nvim
